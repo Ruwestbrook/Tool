@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="TxView">
+        <attr name="radius" format="dimension"/>
+        <attr name="TopRightRadius" format="dimension"/>
+        <attr name="TopLeftRadius" format="dimension"/>
+        <attr name="BottomLeftRadius" format="dimension"/>
+        <attr name="BottomRightRadius" format="dimension"/>
+        <attr name="backColor" format="color"/>
+        <attr name="startColor" format="color"/>
+        <attr name="endColor" format="color"/>
+        <attr name="type" format="integer">
+            <enum name="top_bottom" value="1"/>
+            <enum name="bottom_top" value="2"/>
+            <enum name="left_right" value="3"/>
+            <enum name="right_left" value="4"/>
+            <enum name="leftTop_rightBottom" value="5"/>
+            <enum name="rightBottom_leftTop" value="6"/>
+            <enum name="rightTop_leftBottom" value="7"/>
+            <enum name="leftBottom_rightTop" value="8"/>
+        </attr>
+    </declare-styleable>
+
+</resources>
