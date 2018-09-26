@@ -34,6 +34,16 @@
         <!--按下情况下的背景颜色-->
         <attr name="pressBackColor" format="color"/>
 
+
+        <attr name="stockWidth" format="dimension"/>
+
+        <attr name="stockColor" format="dimension"/>
+
+        <!--select为true的情况下 的边框颜色-->
+        <attr name="selectStockColor" format="dimension"/>
+        <!--按下情况下的边框颜色-->
+        <attr name="pressStockColor" format="dimension"/>
+
     </declare-styleable>
 
 </resources>

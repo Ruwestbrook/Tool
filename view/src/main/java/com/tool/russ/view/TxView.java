@@ -87,6 +87,7 @@ public class TxView extends android.support.v7.widget.AppCompatTextView {
             pressBgDrawable.setColors(new int[]{startColor,endColor});
         }
 
+        //背景颜色
         int selectBgColor=array.getColor(R.styleable.TxView_selectBackColor,backColor);
         if(selectBgColor!=backColor){
             selectBgDrawable.setColor(selectBgColor);
@@ -95,14 +96,19 @@ public class TxView extends android.support.v7.widget.AppCompatTextView {
         if(pressBgColor!=backColor){
             pressBgDrawable.setColor(pressBgColor);
         }
-        bgDrawable.setStroke(40,Color.BLACK);
-        pressBgDrawable.setStroke(40,Color.BLACK);
-        selectBgDrawable.setStroke(40,Color.BLACK);
         if(radius>0){
             bgDrawable.setCornerRadius(radius);
             selectBgDrawable.setCornerRadius(radius);
             pressBgDrawable.setCornerRadius(radius);
         }
+
+        //边框
+        int stockWidth=array.getDimensionPixelSize(R.styleable.TxView_stockWidth,0);
+        int stockColor=array.getColor(R.styleable.TxView_stockColor,white);
+        if(stockWidth>0 && stockColor!=backColor){
+            bgDrawable.setStroke(stockWidth,stockColor);
+        }
+
 
         if(bottomLeftRadius>0 || bottomRightRadius>0 || topLeftRadius>0|| topRightRadius>0){
             bgDrawable.setCornerRadii(new float[]{topLeftRadius,topLeftRadius,
