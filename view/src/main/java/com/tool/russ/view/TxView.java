@@ -6,6 +6,7 @@ import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
@@ -13,6 +14,9 @@ import android.util.AttributeSet;
 
 public class TxView extends android.support.v7.widget.AppCompatTextView {
     private GradientDrawable bgDrawable;
+    private GradientDrawable selectBgDrawable;
+    private GradientDrawable pressBgDrawable;
+    private StateListDrawable mListDrawable;
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public TxView(Context context) {
         this(context,null);
@@ -26,6 +30,10 @@ public class TxView extends android.support.v7.widget.AppCompatTextView {
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public TxView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        bgDrawable=new GradientDrawable();
+        selectBgDrawable=new GradientDrawable();
+        pressBgDrawable=new GradientDrawable();
+        mListDrawable=new StateListDrawable();
         @SuppressLint("Recycle")
         TypedArray array=context.obtainStyledAttributes(attrs,R.styleable.TxView,defStyleAttr,0);
         float radius=array.getDimension(R.styleable.TxView_radius,0);
@@ -38,9 +46,11 @@ public class TxView extends android.support.v7.widget.AppCompatTextView {
         int startColor=array.getColor(R.styleable.TxView_startColor,white);
         int endColor=array.getColor(R.styleable.TxView_endColor,white);
         int type=array.getInteger(R.styleable.TxView_type,1);
-        if(startColor == white && endColor == white)
-            bgDrawable=new GradientDrawable();
-        else {
+        int backColor=array.getColor(R.styleable.TxView_backColor,white);
+        if(startColor == white && endColor == white){
+            bgDrawable.setColor(backColor);
+
+        } else {
             GradientDrawable.Orientation flag=GradientDrawable.Orientation.TOP_BOTTOM;
             switch (type){
                 case 1:
@@ -68,17 +78,64 @@ public class TxView extends android.support.v7.widget.AppCompatTextView {
                     flag= GradientDrawable.Orientation.BL_TR;
                     break;
             }
-            bgDrawable=new GradientDrawable(flag,new int[]{startColor,endColor});
+
+            bgDrawable.setOrientation(flag);
+            bgDrawable.setColors(new int[]{startColor,endColor});
+            selectBgDrawable.setOrientation(flag);
+            pressBgDrawable.setColors(new int[]{startColor,endColor});
+            selectBgDrawable.setOrientation(flag);
+            pressBgDrawable.setColors(new int[]{startColor,endColor});
         }
 
-        if(radius>0)
+        int selectBgColor=array.getColor(R.styleable.TxView_selectBackColor,backColor);
+        if(selectBgColor!=backColor){
+            selectBgDrawable.setColor(selectBgColor);
+        }
+        int pressBgColor=array.getColor(R.styleable.TxView_pressBackColor,backColor);
+        if(pressBgColor!=backColor){
+            pressBgDrawable.setColor(pressBgColor);
+        }
+        bgDrawable.setStroke(40,Color.BLACK);
+        pressBgDrawable.setStroke(40,Color.BLACK);
+        selectBgDrawable.setStroke(40,Color.BLACK);
+        if(radius>0){
             bgDrawable.setCornerRadius(radius);
-        if(bottomLeftRadius>0 || bottomRightRadius>0 || topLeftRadius>0|| topRightRadius>0)
+            selectBgDrawable.setCornerRadius(radius);
+            pressBgDrawable.setCornerRadius(radius);
+        }
+
+        if(bottomLeftRadius>0 || bottomRightRadius>0 || topLeftRadius>0|| topRightRadius>0){
             bgDrawable.setCornerRadii(new float[]{topLeftRadius,topLeftRadius,
                     topRightRadius,topRightRadius,
                     bottomRightRadius,bottomRightRadius,
                     bottomLeftRadius,bottomLeftRadius});
-        setBackground(bgDrawable);
+            selectBgDrawable.setCornerRadii(new float[]{topLeftRadius,topLeftRadius,
+                    topRightRadius,topRightRadius,
+                    bottomRightRadius,bottomRightRadius,
+                    bottomLeftRadius,bottomLeftRadius});
+            pressBgDrawable.setCornerRadii(new float[]{topLeftRadius,topLeftRadius,
+                    topRightRadius,topRightRadius,
+                    bottomRightRadius,bottomRightRadius,
+                    bottomLeftRadius,bottomLeftRadius});
+        }
 
+       // setBackground(bgDrawable);
+        setClickable(true);
+
+        int pressed = android.R.attr.state_pressed;
+        int selected = android.R.attr.state_selected;
+
+
+        mListDrawable.addState(new int []{pressed},pressBgDrawable);
+        mListDrawable.addState(new int []{selected},selectBgDrawable);
+        mListDrawable.addState(new int []{},bgDrawable);
+        setBackground(mListDrawable);
     }
+
+   void setRadius(int radius){
+       bgDrawable.setCornerRadius(radius);
+       selectBgDrawable.setCornerRadius(radius);
+       pressBgDrawable.setCornerRadius(radius);
+    }
+
 }

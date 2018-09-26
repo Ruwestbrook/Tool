@@ -6,9 +6,11 @@
         <attr name="TopLeftRadius" format="dimension"/>
         <attr name="BottomLeftRadius" format="dimension"/>
         <attr name="BottomRightRadius" format="dimension"/>
+        <!--默认情况下的背景颜色-->
         <attr name="backColor" format="color"/>
         <attr name="startColor" format="color"/>
         <attr name="endColor" format="color"/>
+        <!--渐变颜色方向-->
         <attr name="type" format="integer">
             <enum name="top_bottom" value="1"/>
             <enum name="bottom_top" value="2"/>
@@ -19,6 +21,19 @@
             <enum name="rightTop_leftBottom" value="7"/>
             <enum name="leftBottom_rightTop" value="8"/>
         </attr>
+
+        <!--默认情况下的字体颜色-->
+        <attr name="normalTextColor" format="color"/>
+        <!--select为true的情况下 的字体颜色-->
+        <attr name="selectTextColor" format="color"/>
+        <!--按下情况下的字体颜色-->
+        <attr name="pressTextColor" format="color"/>
+
+        <!--select为true的情况下 的背景颜色-->
+        <attr name="selectBackColor" format="color"/>
+        <!--按下情况下的背景颜色-->
+        <attr name="pressBackColor" format="color"/>
+
     </declare-styleable>
 
 </resources>

@@ -59,4 +59,19 @@
 
     </com.tool.russ.view.FlowLayout>
 
+    <com.tool.russ.view.TxView
+        android:layout_width="100dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:radius="100dp"
+        android:id="@+id/xview"
+        android:text="测试TextView"
+        android:gravity="center"
+        app:backColor="#ff3732"
+        app:pressBackColor="#f7f"
+        app:selectBackColor="@color/colorPrimary"
+        android:layout_height="100dp" />
+
 </android.support.constraint.ConstraintLayout>
