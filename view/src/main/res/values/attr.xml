@@ -21,28 +21,40 @@
             <enum name="rightTop_leftBottom" value="7"/>
             <enum name="leftBottom_rightTop" value="8"/>
         </attr>
-
         <!--默认情况下的字体颜色-->
         <attr name="normalTextColor" format="color"/>
-        <!--select为true的情况下 的字体颜色-->
-        <attr name="selectTextColor" format="color"/>
-        <!--按下情况下的字体颜色-->
-        <attr name="pressTextColor" format="color"/>
-
-        <!--select为true的情况下 的背景颜色-->
-        <attr name="selectBackColor" format="color"/>
-        <!--按下情况下的背景颜色-->
-        <attr name="pressBackColor" format="color"/>
 
 
+
+        <!--边框大小-->
         <attr name="stockWidth" format="dimension"/>
-
+        <!--边框间隙-->
+        <attr name="stockDashGap" format="dimension"/>
+        <!--边框间隙宽度-->
+        <attr name="stockDashWidth" format="dimension"/>
+        <!--默认情况下的边框颜色-->
         <attr name="stockColor" format="dimension"/>
 
+
+        <!--是否开启select属性-->
+        <attr name="select" format="boolean"/>
+        <!--select为true的情况下 的字体颜色-->
+        <attr name="selectTextColor" format="color"/>
+        <!--select为true的情况下 的背景颜色-->
+        <attr name="selectBackColor" format="color"/>
         <!--select为true的情况下 的边框颜色-->
         <attr name="selectStockColor" format="dimension"/>
+
+
+
+        <!--是否开启press属性-->
+        <attr name="press" format="boolean"/>
+        <!--按下情况下的字体颜色-->
+        <attr name="pressTextColor" format="color"/>
         <!--按下情况下的边框颜色-->
         <attr name="pressStockColor" format="dimension"/>
+        <!--按下情况下的背景颜色-->
+        <attr name="pressBackColor" format="color"/>
 
     </declare-styleable>
 

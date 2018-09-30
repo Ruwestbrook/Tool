@@ -16,7 +16,8 @@ public class TxView extends android.support.v7.widget.AppCompatTextView {
     private GradientDrawable bgDrawable;
     private GradientDrawable selectBgDrawable;
     private GradientDrawable pressBgDrawable;
-    private StateListDrawable mListDrawable;
+    private boolean isSelect;
+    private boolean isPress;
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public TxView(Context context) {
         this(context,null);
@@ -33,7 +34,7 @@ public class TxView extends android.support.v7.widget.AppCompatTextView {
         bgDrawable=new GradientDrawable();
         selectBgDrawable=new GradientDrawable();
         pressBgDrawable=new GradientDrawable();
-        mListDrawable=new StateListDrawable();
+
         @SuppressLint("Recycle")
         TypedArray array=context.obtainStyledAttributes(attrs,R.styleable.TxView,defStyleAttr,0);
         float radius=array.getDimension(R.styleable.TxView_radius,0);
@@ -87,61 +88,110 @@ public class TxView extends android.support.v7.widget.AppCompatTextView {
             pressBgDrawable.setColors(new int[]{startColor,endColor});
         }
 
-        //背景颜色
-        int selectBgColor=array.getColor(R.styleable.TxView_selectBackColor,backColor);
-        if(selectBgColor!=backColor){
+        //select为true的时候的背景颜色
+        isSelect=array.getBoolean(R.styleable.TxView_select,false);
+        if(isSelect){
+            int selectBgColor=array.getColor(R.styleable.TxView_selectBackColor,backColor);
             selectBgDrawable.setColor(selectBgColor);
         }
-        int pressBgColor=array.getColor(R.styleable.TxView_pressBackColor,backColor);
-        if(pressBgColor!=backColor){
+        //按下的时候的背景颜色
+        isPress=array.getBoolean(R.styleable.TxView_press,false);
+        if(isPress){
+            int pressBgColor=array.getColor(R.styleable.TxView_pressBackColor,backColor);
             pressBgDrawable.setColor(pressBgColor);
         }
-        if(radius>0){
-            bgDrawable.setCornerRadius(radius);
-            selectBgDrawable.setCornerRadius(radius);
-            pressBgDrawable.setCornerRadius(radius);
-        }
-
+        //设置圆角
+        setRadius(radius);
         //边框
         int stockWidth=array.getDimensionPixelSize(R.styleable.TxView_stockWidth,0);
-        int stockColor=array.getColor(R.styleable.TxView_stockColor,white);
-        if(stockWidth>0 && stockColor!=backColor){
-            bgDrawable.setStroke(stockWidth,stockColor);
+        float stockDashGap=array.getDimensionPixelSize(R.styleable.TxView_stockDashGap,0);
+        float stockDashWidth=array.getDimensionPixelSize(R.styleable.TxView_stockDashWidth,0);
+
+        //默认边框的颜色
+        int stockColor=array.getColor(R.styleable.TxView_stockColor,backColor);
+        if(stockWidth>0){
+            bgDrawable.setStroke(stockWidth,stockColor,stockDashWidth,stockDashGap);
+            //如果有select状态 设置select状态下的边框颜色
+            if(isSelect){
+                int selectStockColor=array.getColor(R.styleable.TxView_selectStockColor,stockColor);
+                selectBgDrawable.setStroke(stockWidth,selectStockColor,stockDashWidth,stockDashGap);
+            }
+            //如果有press状态 设置press状态下的边框颜色
+            if(isPress){
+                int pressStockColor=array.getColor(R.styleable.TxView_pressStockColor,stockColor);
+                pressBgDrawable.setStroke(stockWidth,pressStockColor,stockDashWidth,stockDashGap);
+            }
         }
 
 
         if(bottomLeftRadius>0 || bottomRightRadius>0 || topLeftRadius>0|| topRightRadius>0){
-            bgDrawable.setCornerRadii(new float[]{topLeftRadius,topLeftRadius,
-                    topRightRadius,topRightRadius,
-                    bottomRightRadius,bottomRightRadius,
-                    bottomLeftRadius,bottomLeftRadius});
-            selectBgDrawable.setCornerRadii(new float[]{topLeftRadius,topLeftRadius,
-                    topRightRadius,topRightRadius,
-                    bottomRightRadius,bottomRightRadius,
-                    bottomLeftRadius,bottomLeftRadius});
-            pressBgDrawable.setCornerRadii(new float[]{topLeftRadius,topLeftRadius,
-                    topRightRadius,topRightRadius,
-                    bottomRightRadius,bottomRightRadius,
-                    bottomLeftRadius,bottomLeftRadius});
+            setRadius(bottomLeftRadius,bottomRightRadius,topLeftRadius,topRightRadius);
         }
 
-       // setBackground(bgDrawable);
+
         setClickable(true);
+        StateListDrawable listDrawable = new StateListDrawable();
+      //按下时的Drawable
+        if(isPress)
+        listDrawable.addState(new int []{android.R.attr.state_pressed},pressBgDrawable);
+        //select时的Drawable
+        if(isSelect)
+        listDrawable.addState(new int []{android.R.attr.state_selected},selectBgDrawable);
+        listDrawable.addState(new int []{},bgDrawable);
+        setBackground(listDrawable);
 
-        int pressed = android.R.attr.state_pressed;
-        int selected = android.R.attr.state_selected;
 
+        //设置textColor
 
-        mListDrawable.addState(new int []{pressed},pressBgDrawable);
-        mListDrawable.addState(new int []{selected},selectBgDrawable);
-        mListDrawable.addState(new int []{},bgDrawable);
-        setBackground(mListDrawable);
+        int normalTextColor=array.getColor(R.styleable.TxView_normalTextColor,white);
+        int selectTextColor=array.getColor(R.styleable.TxView_selectTextColor,normalTextColor);
+        int pressTextColor=array.getColor(R.styleable.TxView_pressTextColor,normalTextColor);
+        setTextColor(normalTextColor,(isSelect?selectTextColor:normalTextColor),(isPress?pressTextColor:normalTextColor));
     }
 
-   void setRadius(int radius){
+    /**
+     *
+     * @param radius 统一的圆角度数
+     */
+   void setRadius(float radius){
        bgDrawable.setCornerRadius(radius);
-       selectBgDrawable.setCornerRadius(radius);
-       pressBgDrawable.setCornerRadius(radius);
+       if(isSelect)
+            selectBgDrawable.setCornerRadius(radius);
+       if(isPress)
+           pressBgDrawable.setCornerRadius(radius);
     }
 
+    /**
+     * 设置不同的圆角
+     * @param bottomLeftRadius 左下的圆角度数
+     * @param bottomRightRadius 右下的圆角度数
+     * @param topLeftRadius 左上的圆角度数
+     * @param topRightRadius 右上的圆角度数
+     */
+    void setRadius(float bottomLeftRadius,float bottomRightRadius, float topLeftRadius ,float topRightRadius){
+        bgDrawable.setCornerRadii(new float[]{topLeftRadius,topLeftRadius,
+                topRightRadius,topRightRadius,
+                bottomRightRadius,bottomRightRadius,
+                bottomLeftRadius,bottomLeftRadius});
+        if(isSelect)
+            selectBgDrawable.setCornerRadii(new float[]{topLeftRadius,topLeftRadius,
+                topRightRadius,topRightRadius,
+                bottomRightRadius,bottomRightRadius,
+                bottomLeftRadius,bottomLeftRadius});
+        if(isPress)
+            pressBgDrawable.setCornerRadii(new float[]{topLeftRadius,topLeftRadius,
+                topRightRadius,topRightRadius,
+                bottomRightRadius,bottomRightRadius,
+                bottomLeftRadius,bottomLeftRadius});
+    }
+
+
+    public void setTextColor(int normalColor,int selectColor,int pressColor) {
+     int[][] states=new int[3][1];
+        states[0] = new int[]{android.R.attr.state_selected};
+        states[1] = new int[]{android.R.attr.state_pressed};
+        states[2] = new int[]{};
+        ColorStateList list=new ColorStateList(states,new int[]{normalColor,selectColor,pressColor});
+        setTextColor(list);
+    }
 }
