@@ -191,7 +191,7 @@ public class TxView extends android.support.v7.widget.AppCompatTextView {
         states[0] = new int[]{android.R.attr.state_selected};
         states[1] = new int[]{android.R.attr.state_pressed};
         states[2] = new int[]{};
-        ColorStateList list=new ColorStateList(states,new int[]{normalColor,selectColor,pressColor});
+        ColorStateList list=new ColorStateList(states,new int[]{selectColor,pressColor,normalColor});
         setTextColor(list);
     }
 }

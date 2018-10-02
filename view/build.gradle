@@ -29,12 +29,12 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
-    implementation 'com.android.support:appcompat-v7:27.0.2'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:27.1.1'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    implementation 'com.android.support:recyclerview-v7:27.1.1'
 }
 //生成源文件
 task sourcesJar(type: Jar) {
@@ -79,7 +79,7 @@ publish {
     userOrg = 'russ'           //bintray.com 注册的用户名
     groupId = 'com.tool.russ.view'   //以后访问 jcenter上此项目的路径，
     artifactId = 'TxView'       //bintray.com 创建的 Package 名
-    publishVersion = '1.0.0'         //版本号
+    publishVersion = '1.2.0'         //版本号
     desc = '自定义的TexView' //版本说明
     website = 'https://github.com/Ruwestbrook/Tool'    //关于这个开源项目的网站
 }

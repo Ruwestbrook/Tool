@@ -1,11 +1,13 @@
 package com.tool.russ.view;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
-public class FlowLayout extends ViewGroup {
+public class FlowLayout extends LinearLayout {
 
     public FlowLayout(Context context) {
         super(context);
@@ -20,86 +22,61 @@ public class FlowLayout extends ViewGroup {
     }
 
 
-
-    @Override
-    protected LayoutParams generateLayoutParams(LayoutParams p) {
-        return new MarginLayoutParams(p);
-    }
-
-    @Override
-    public LayoutParams generateLayoutParams(AttributeSet attrs) {
-        return new MarginLayoutParams(getContext(),attrs);
-    }
-
-    @Override
-    protected LayoutParams generateDefaultLayoutParams() {
-        return  new MarginLayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT);
-    }
-
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int measureWidth=MeasureSpec.getSize(widthMeasureSpec);
-        int measureWidthMode=MeasureSpec.getMode(widthMeasureSpec);
-        int measureHeight=MeasureSpec.getSize(heightMeasureSpec);
-        int measureHeightMode=MeasureSpec.getMode(heightMeasureSpec);
         int count=getChildCount();
-        int lineWidth=0;
-        int lineHeight=0;
-        int height=0;
         int width=0;
+        int height=0;
+        int lineHeight=0;
         for (int i = 0; i < count; i++) {
             View child=getChildAt(i);
             measureChild(child,widthMeasureSpec,heightMeasureSpec);
-            MarginLayoutParams layoutParams= (MarginLayoutParams) child.getLayoutParams();
+            LinearLayout.LayoutParams layoutParams= (LinearLayout.LayoutParams) child.getLayoutParams();
             int childWidth=child.getMeasuredWidth()+layoutParams.leftMargin+layoutParams.rightMargin;
             int childHeight=child.getMeasuredHeight()+layoutParams.topMargin+layoutParams.bottomMargin;
-            if(lineWidth+childWidth>measureWidth){
+            if(childWidth+width>measureWidth){
                 //需要换行
-                width=Math.max(lineWidth,childWidth);
                 height+=lineHeight;
                 lineHeight=childHeight;
-                lineWidth=childWidth;
+                width=childWidth;
             }else {
+                width+=childWidth;
                 lineHeight=Math.max(lineHeight,childHeight);
-                lineWidth+=childWidth;
             }
-            if(i==count-1){
+            if(i==count-1)
                 height+=lineHeight;
-                width=Math.max(width,lineWidth);
-            }
         }
-        setMeasuredDimension((measureWidthMode==MeasureSpec.EXACTLY?measureWidth:width),
-                (measureHeightMode==MeasureSpec.EXACTLY?measureHeight:height));
+        setMeasuredDimension(measureWidth,height);
     }
 
     @Override
-    protected void onLayout(boolean b, int i, int i1, int i2, int i3) {
-        int count=getChildCount();
-        int lineWidth=0;
-        int lineHeight=0;
-        int top=0,left=0;
-        for (int k = 0; k < count; k++) {
-            View child=getChildAt(k);
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+    }
 
-            MarginLayoutParams layoutParams= (MarginLayoutParams) child.getLayoutParams();
+
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+
+        int count=getChildCount();
+        int left=0,top=0,height=0;
+        for (int i = 0; i < count; i++) {
+            View child=getChildAt(i);
+            LinearLayout.LayoutParams layoutParams= (LinearLayout.LayoutParams) child.getLayoutParams();
             int childWidth=child.getMeasuredWidth()+layoutParams.leftMargin+layoutParams.rightMargin;
             int childHeight=child.getMeasuredHeight()+layoutParams.topMargin+layoutParams.bottomMargin;
-            if(lineWidth+childWidth>getMeasuredWidth()){
-                top+=lineHeight;
+            if(left+childWidth>=getMeasuredWidth()){
                 left=0;
-                lineHeight=childHeight;
-                lineWidth=childWidth;
+                top+=height;
+                height=0;
             }else {
-                lineHeight=Math.max(lineHeight,childHeight);
-                lineWidth+=childWidth;
+                height=Math.max(height,childHeight);
             }
-
-            int lc=left+layoutParams.leftMargin;
-            int tc=top+layoutParams.topMargin;
-            int rc=lc+child.getMeasuredWidth();
-            int bc=top+child.getMeasuredHeight();
-            child.layout(lc,tc,rc,bc);
+            child.layout(left+layoutParams.leftMargin,top+layoutParams.topMargin,left+child.getMeasuredWidth()+layoutParams.leftMargin,top+child.getMeasuredHeight()+layoutParams.topMargin);
             left+=childWidth;
         }
     }
