@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 public class RefreshView extends LinearLayout implements View.OnTouchListener {
     private static final String TAG = "RefreshView";
     private View headView;
+    private int headHeight;
     private RecyclerView mRecyclerView;
     LinearLayout.LayoutParams layoutParams;
     public RefreshView(Context context) {
@@ -41,9 +42,9 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
         super.onLayout(changed, l, t, r, b);
         if(changed && !isFirst){
             isFirst=true;
-            int height=headView.getMeasuredHeight();
+            headHeight=headView.getMeasuredHeight();
              layoutParams= (LayoutParams) headView.getLayoutParams();
-            layoutParams.topMargin=-height;
+            layoutParams.topMargin=-headHeight;
             headView.setLayoutParams(layoutParams);
             mRecyclerView= (RecyclerView) getChildAt(1);
             mRecyclerView.setOnTouchListener(this);
@@ -64,7 +65,7 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
             case MotionEvent.ACTION_UP:
                 //抬起
                 downY=0;
-                layoutParams.height=0;
+                layoutParams.height=-headHeight;
                 headView.setLayoutParams(layoutParams);
                 break;
             case MotionEvent.ACTION_DOWN:
