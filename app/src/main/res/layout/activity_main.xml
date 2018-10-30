@@ -6,66 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <com.tool.russ.view.FlowLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <com.tool.russ.view.TxView
-            android:text="全部"
-            android:id="@+id/all"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
-            app:normalTextColor="#333"
-            app:selectTextColor="@color/white"
-            app:radius="10dp"
-            android:gravity="center"
-            app:select="true"
-            app:selectBackColor="#ff3727"
-            app:backColor="@color/white"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:text="吹风机" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:text="吸尘器" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:text="无叶风扇" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:text="净化器/加湿器" />
-    </com.tool.russ.view.FlowLayout>
+ <com.tool.russ.view.RefreshView
+     android:layout_width="match_parent"
+     android:layout_height="match_parent">
+     <android.support.v7.widget.RecyclerView
+         android:layout_width="match_parent"
+         android:id="@+id/list"
+         android:layout_height="match_parent"/>
+ </com.tool.russ.view.RefreshView>
 </android.support.constraint.ConstraintLayout>

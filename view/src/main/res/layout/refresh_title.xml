@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <ImageView
+        android:id="@+id/img_one"
+        android:layout_width="41dp"
+        android:layout_height="37dp"
+        android:src="@drawable/auction6_1"
+        app:layout_constraintHorizontal_bias="0.35"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.511" />
+    <ImageView
+        android:layout_width="22dp"
+        android:layout_height="4dp"
+        android:src="@drawable/auction6_2"
+
+        app:layout_constraintBottom_toBottomOf="@id/img_one"
+        app:layout_constraintLeft_toLeftOf="@id/img_one" />
+
+    <TextView
+        android:id="@+id/text_one"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        android:text="超IN的低价竞拍"
+        android:textColor="#ff3739"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/img_one"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.36" />
+
+    <TextView
+        android:text="松开即可刷新"
+        android:layout_marginTop="8dp"
+        android:id="@+id/text"
+        app:layout_constraintLeft_toRightOf="@id/img_one"
+        android:layout_marginLeft="15dp"
+        android:textColor="#ff3739"
+        android:alpha="0.6"
+        app:layout_constraintTop_toBottomOf="@id/text_one"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp" />
+
+</android.support.constraint.ConstraintLayout>
