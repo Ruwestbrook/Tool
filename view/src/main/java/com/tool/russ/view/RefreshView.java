@@ -3,6 +3,7 @@ package com.tool.russ.view;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -58,27 +59,43 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
-
-        Log.d(TAG, "onTouch: "+headView.getLayoutParams().getClass());
-        Log.d(TAG, "onTouch: ");
-        switch (motionEvent.getAction()){
-            case MotionEvent.ACTION_UP:
-                //抬起
-                downY=0;
-                layoutParams.height=-headHeight;
-                headView.setLayoutParams(layoutParams);
-                break;
-            case MotionEvent.ACTION_DOWN:
-                //按下
-                downY=motionEvent.getRawY();
-                break;
-            case MotionEvent.ACTION_MOVE:
-                //移动
-                float y=motionEvent.getRawY();
-
-               layoutParams.height= (int) (y-downY);
-                headView. setLayoutParams(layoutParams);
+        if(canRefresh()){
+            switch (motionEvent.getAction()){
+                case MotionEvent.ACTION_UP:
+                    //抬起
+                    downY=0;
+                    layoutParams.topMargin=-headHeight;
+                    headView.setLayoutParams(layoutParams);
+                    break;
+                case MotionEvent.ACTION_DOWN:
+                    //按下
+                    downY=motionEvent.getRawY();
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    //移动
+                    float y=motionEvent.getRawY();
+                    layoutParams.topMargin= (int) (y-downY);
+                    headView. setLayoutParams(layoutParams);
+            }
         }
         return false;
+    }
+
+    private boolean canRefresh() {
+        if(mRecyclerView!=null){
+           LinearLayoutManager layoutManager= (LinearLayoutManager) mRecyclerView.getLayoutManager();
+            View view=mRecyclerView.getChildAt(0);
+            if(view!=null){
+                if(view.getTop()==0 && layoutManager.findFirstVisibleItemPosition()==0){
+                    return  true;
+                }else {
+                    if(layoutParams.topMargin!=-headHeight){
+                        layoutParams.topMargin=-headHeight;
+                        headView.setLayoutParams(layoutParams);
+                    }
+                }
+            }
+        }
+        return  false;
     }
 }
