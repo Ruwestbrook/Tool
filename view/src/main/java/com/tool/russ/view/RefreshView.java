@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
@@ -17,6 +18,8 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
     private static final String TAG = "RefreshView";
     private View headView;
     private int headHeight;
+    private int touchSlop;
+    private boolean canPull;
     private RecyclerView mRecyclerView;
     LinearLayout.LayoutParams layoutParams;
     public RefreshView(Context context) {
@@ -34,6 +37,7 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
         setLongClickable(true);
         headView=LayoutInflater.from(context).inflate(R.layout.refresh_title,this,false);
         addView(headView,0);
+        touchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
     }
 
 
@@ -55,11 +59,10 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
 
     private float downY=0;
 
-
-
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
-        if(canRefresh()){
+        canRefresh(motionEvent);
+        if(canPull){
             switch (motionEvent.getAction()){
                 case MotionEvent.ACTION_UP:
                     //抬起
@@ -73,29 +76,51 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
                     break;
                 case MotionEvent.ACTION_MOVE:
                     //移动
+                    Log.d(TAG, "onTouch:ACTION_MOVEACTION_MOVEACTION_MOVEACTION_MOVE ");
                     float y=motionEvent.getRawY();
-                    layoutParams.topMargin= (int) (y-downY);
-                    headView. setLayoutParams(layoutParams);
+                    int distance= (int) (y-downY);
+                    // 如果手指是下滑状态，并且下拉头是完全隐藏的，就屏蔽下拉事件
+
+                    if (distance < touchSlop) {
+                        return false;
+                    }
+                    if(distance<0)
+                        distance=0;
+
+                    layoutParams.topMargin=-headHeight+distance;
+                    Log.d(TAG, "onTouch: layoutParams.topMargin="+layoutParams.topMargin+"headHeight"+headHeight);
+                    headView.setLayoutParams(layoutParams);
             }
         }
         return false;
     }
 
-    private boolean canRefresh() {
+    private void canRefresh(MotionEvent motionEvent) {
         if(mRecyclerView!=null){
            LinearLayoutManager layoutManager= (LinearLayoutManager) mRecyclerView.getLayoutManager();
             View view=mRecyclerView.getChildAt(0);
             if(view!=null){
-                if(view.getTop()==0 && layoutManager.findFirstVisibleItemPosition()==0){
-                    return  true;
+                Log.d(TAG, "canRefresh:view.getTop()= "+view.getTop());
+                Log.d(TAG, "canRefresh:layoutManager.findFirstVisibleItemPosition()= "+layoutManager.findFirstVisibleItemPosition());
+                if(view.getTop()<=0 && layoutManager.findFirstVisibleItemPosition()==0){
+                    if(!canPull){
+                        downY=motionEvent.getRawY();
+                    }
+                    canPull=true;
                 }else {
+                    Log.d(TAG, " layoutParams.topMargin="+layoutParams.topMargin+"headHeight"+headHeight+"view.getTop()"+view.getTop());
                     if(layoutParams.topMargin!=-headHeight){
+                        //到了这一步
+                        Log.d(TAG, "canRefresh:到了这一步到了这一步到了这一步 ");
                         layoutParams.topMargin=-headHeight;
                         headView.setLayoutParams(layoutParams);
                     }
+                    canPull=false;
                 }
+            }else {
+                canPull=true;
             }
         }
-        return  false;
+
     }
 }
