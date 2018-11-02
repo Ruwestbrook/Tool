@@ -2,6 +2,7 @@ package com.tool.russ.view;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
@@ -96,8 +97,7 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
             @Override
             public void endRefresh() {
 
-                layoutParams.topMargin=-headHeight;
-                headView.setLayoutParams(layoutParams);
+               new HideHeader().execute();
             }
 
             @Override
@@ -197,5 +197,42 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
             }
         }
 
+    }
+
+    class HideHeader extends AsyncTask<Void,Integer,Integer>{
+
+        @Override
+        protected Integer doInBackground(Void... voids) {
+            int topMargin = layoutParams.topMargin;
+            while (true) {
+                topMargin = topMargin - 30;
+                if (topMargin <= -headHeight) {
+                    topMargin = -headHeight;
+                    break;
+                }
+                publishProgress(topMargin);
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            return topMargin;
+        }
+
+        //处理异步所得结果
+        @Override
+        protected void onPostExecute(Integer integer) {
+            layoutParams.topMargin=-headHeight;
+            headView.setLayoutParams(layoutParams);
+           currentStatus=STATUS_NORMAL;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            layoutParams.topMargin=values[0];
+            headView.setLayoutParams(layoutParams);
+            currentStatus=STATUS_NORMAL;
+        }
     }
 }
