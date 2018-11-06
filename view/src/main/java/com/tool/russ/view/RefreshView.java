@@ -15,6 +15,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -33,81 +37,102 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
     private int currentStatus=0;
     //刷新头部
     private View headView;
+
+    private Context mContext;
+
     //刷新头部高度
     private int headHeight;
     private int touchSlop;
     //当前是否可以下拉刷新
     private boolean canPull;
 
+    private RefreshListener listener;
+
     private int pullHeight;
     private RefreshEvent mRefreshEvent;
     private RecyclerView mRecyclerView;
     LinearLayout.LayoutParams layoutParams;
-    private Handler mHandler;
     public RefreshView(Context context) {
         this(context,null);
     }
     private boolean isFirst=false;
     TextView textView;
+    ImageView imageView;
     public RefreshView(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs,0);
     }
 
     @SuppressLint("HandlerLeak")
-    public RefreshView(Context context, @Nullable AttributeSet attrs, int defStyle) {
+    public RefreshView(final Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        mContext=context;
         setOrientation(LinearLayout.VERTICAL);
         setLongClickable(true);
         headView=LayoutInflater.from(context).inflate(R.layout.refresh_title,this,false);
          textView=headView.findViewById(R.id.text);
+        imageView=headView.findViewById(R.id.image);
+        imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.load));
         addView(headView,0);
-       mHandler=new Handler(){
-           @Override
-           public void handleMessage(Message msg) {
-               switch (msg.what){
-                   case 1:
-                       textView.setText("正在刷新正在刷新正在刷新正在刷新正在刷新");
-                       break;
-                   case 2:
-                       mRefreshEvent.endRefresh();
-                       break;
-               }
-           }
-       };
         touchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         mRefreshEvent=new RefreshEvent() {
             @Override
             public void canRefresh() {
-                textView.setText("松开即可刷新");
+                textView.setText("释放更新");
+                Animation animation=AnimationUtils.loadAnimation(mContext,R.anim.rotate_one);
+                imageView.startAnimation(animation);
+
             }
 
             @Override
             public void cancelRefresh() {
-                textView.setText("下来刷新");
+                textView.setText("下拉刷新");
+
+                Animation animation=AnimationUtils.loadAnimation(mContext,R.anim.rotate_two);
+                imageView.startAnimation(animation);
+
             }
 
+            //开始刷新
             @Override
             public void startRefresh() {
                 Log.d(TAG, "startRefresh:正在刷新正在刷新 "+textView.toString());
-             mHandler.sendEmptyMessageDelayed(2,1500);
+                currentStatus=STATUS_REFRESH;
+
                 textView.setText("正在刷新");
-               //endRefresh();
+                //endRefresh();
+                imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.rotate));
+                Animation animation=AnimationUtils.loadAnimation(mContext,R.anim.rotate_three);
+                animation.setInterpolator(new LinearInterpolator());
+                imageView.startAnimation(animation);
+                listener.refresh();
             }
-
+            //完成了一次刷新,并且隐藏了头部
             @Override
-            public void endRefresh() {
+            public void finishRefresh() {
+                currentStatus=STATUS_NORMAL;
+                imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.load));
 
-               new HideHeader().execute();
             }
 
             @Override
             public void onRefresh(int distance) {
-
+                imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.load));
             }
         };
     }
 
+    public  void setRefreshing(boolean refreshing){
+        if(!refreshing && currentStatus==STATUS_REFRESH){
+            new HideHeader().execute();
+        }
+    }
+    public void setRefreshEvent(RefreshEvent refreshEvent){
+        mRefreshEvent=refreshEvent;
+    }
 
+    public void setOnRefreshListener(RefreshListener listener){
+        this.listener=listener;
+    }
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
@@ -115,8 +140,8 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
         if(changed && !isFirst){
             isFirst=true;
             headHeight=headView.getMeasuredHeight();
-             layoutParams= (LayoutParams) headView.getLayoutParams();
-            pullHeight=headHeight*3/4;
+            layoutParams= (LayoutParams) headView.getLayoutParams();
+            pullHeight=headHeight;
             layoutParams.topMargin=-headHeight;
             headView.setLayoutParams(layoutParams);
             mRecyclerView= (RecyclerView) getChildAt(1);
@@ -129,6 +154,9 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
+        if(currentStatus==STATUS_REFRESH){
+            return  true;
+        }
         canRefresh(motionEvent);
         if(canPull){
             switch (motionEvent.getAction()){
@@ -156,10 +184,11 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
                     if (distance < touchSlop) {
                         return false;
                     }
-                        if(distance>=pullHeight){
+                        if(distance>=pullHeight && currentStatus!=STATUS_CAN_REFRESH){
                             currentStatus=STATUS_CAN_REFRESH;
                             mRefreshEvent.canRefresh();
-                        }else {
+                        }
+                        if(distance<pullHeight && currentStatus!=STATUS_PULL) {
                             currentStatus=STATUS_PULL;
                             mRefreshEvent.cancelRefresh();
                         }
@@ -199,20 +228,23 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
 
     }
 
+
+
+    @SuppressLint("StaticFieldLeak")
     class HideHeader extends AsyncTask<Void,Integer,Integer>{
 
         @Override
         protected Integer doInBackground(Void... voids) {
             int topMargin = layoutParams.topMargin;
             while (true) {
-                topMargin = topMargin - 30;
+                topMargin = topMargin - 20;
                 if (topMargin <= -headHeight) {
                     topMargin = -headHeight;
                     break;
                 }
                 publishProgress(topMargin);
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(5);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -220,19 +252,23 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
             return topMargin;
         }
 
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            layoutParams.topMargin=values[0];
+            headView.setLayoutParams(layoutParams);
+        }
+
         //处理异步所得结果
         @Override
         protected void onPostExecute(Integer integer) {
             layoutParams.topMargin=-headHeight;
             headView.setLayoutParams(layoutParams);
-           currentStatus=STATUS_NORMAL;
+           mRefreshEvent.finishRefresh();
         }
 
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            layoutParams.topMargin=values[0];
-            headView.setLayoutParams(layoutParams);
-            currentStatus=STATUS_NORMAL;
-        }
+
     }
+
+
+
 }

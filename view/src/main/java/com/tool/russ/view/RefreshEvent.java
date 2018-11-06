@@ -4,6 +4,6 @@ public interface RefreshEvent {
     void canRefresh();
     void cancelRefresh();
     void startRefresh();
-    void endRefresh();
+    void finishRefresh();
     void onRefresh(int distance);
 }
