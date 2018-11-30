@@ -9,7 +9,9 @@
     <com.tool.russ.view.CircleView
         android:id="@+id/refresh"
         android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_height="200dp"
+        app:circleType="round"
+        app:circleRadius="90dp"
         android:src="@drawable/pic"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
