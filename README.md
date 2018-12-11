@@ -43,5 +43,5 @@ rightBottm_leftTop,
 
 rightTop_leftBottom,
 
-leftBottm_rightTop
+leftBottom_rightTop
 

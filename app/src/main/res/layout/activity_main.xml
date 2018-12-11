@@ -6,13 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <com.tool.russ.view.CircleView
+    <com.tool.russ.tool.TestView
         android:id="@+id/refresh"
-        android:layout_width="300dp"
+        android:layout_width="200dp"
         android:layout_height="200dp"
-        app:circleType="round"
-        app:circleRadius="90dp"
-        android:src="@drawable/pic"
+        app:circleType="circle"
+        android:background="@color/colorPrimary"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
