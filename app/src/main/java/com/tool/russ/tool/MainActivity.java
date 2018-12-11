@@ -19,11 +19,61 @@ import com.tool.russ.view.RefreshView;
 import com.tool.russ.view.TxView;
 
 public class MainActivity extends AppCompatActivity {
-
+    private RecyclerView mRecyclerView;
+    private RefreshView mRefreshView;
+    private Handler handler;
     @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        handler=new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                switch (msg.what){
+                    case 1:
+                        break;
+                    case 2:
+                        mRefreshView.setRefreshing(false);
+                }
+            }
+        };
         setContentView(R.layout.activity_main);
+        mRecyclerView=findViewById(R.id.list);
+        mRefreshView=findViewById(R.id.refresh);
+        View view=LayoutInflater.from(this).inflate(R.layout.title,mRefreshView,false);
+        mRefreshView.setHeadView(view);
+        mRefreshView.setOnRefreshListener(new RefreshListener() {
+
+            @Override
+            public void refresh() {
+                handler.sendEmptyMessageDelayed(2,2000);
+            }
+        });
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setAdapter(new RecyclerView.Adapter() {
+            @NonNull
+            @Override
+            public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                return new RecyclerView.ViewHolder(LayoutInflater.from(MainActivity.this).inflate(R.layout.item,parent,false)) {};
+            }
+
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+                TextView textView=holder.itemView.findViewById(R.id.text);
+                textView.setText("这是第"+(position+1)+"个Item");
+            }
+
+            @Override
+            public int getItemCount() {
+                return 20;
+            }
+        });
+
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return super.onTouchEvent(event);
     }
 }

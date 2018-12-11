@@ -1,5 +1,9 @@
 package com.tool.russ.view;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -35,6 +39,9 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
     private static final int STATUS_REFRESH=3;
 
     private int currentStatus=0;
+
+
+
     //刷新头部
     private View headView;
 
@@ -123,7 +130,7 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
 
     public  void setRefreshing(boolean refreshing){
         if(!refreshing && currentStatus==STATUS_REFRESH){
-            new HideHeader().execute();
+            new HideHeader().start();
         }
     }
     public void setRefreshEvent(RefreshEvent refreshEvent){
@@ -133,6 +140,12 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
     public void setOnRefreshListener(RefreshListener listener){
         this.listener=listener;
     }
+    public void setHeadView(View headView) {
+        this.headView = headView;
+       this.removeViewAt(0);
+       addView(headView,0);
+        isFirst=false;
+    }
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
@@ -141,6 +154,9 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
             isFirst=true;
             headHeight=headView.getMeasuredHeight();
             layoutParams= (LayoutParams) headView.getLayoutParams();
+            if(layoutParams==null){
+                layoutParams=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+            }
             pullHeight=headHeight;
             layoutParams.topMargin=-headHeight;
             headView.setLayoutParams(layoutParams);
@@ -230,40 +246,27 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
 
 
 
-    @SuppressLint("StaticFieldLeak")
-    class HideHeader extends AsyncTask<Void,Integer,Integer>{
 
-        @Override
-        protected Integer doInBackground(Void... voids) {
-            int topMargin = layoutParams.topMargin;
-            while (true) {
-                topMargin = topMargin - 20;
-                if (topMargin <= -headHeight) {
-                    topMargin = -headHeight;
-                    break;
+    class HideHeader{
+
+        void start(){
+            ValueAnimator valueAnimator = ObjectAnimator.ofFloat(layoutParams.topMargin, -headHeight).setDuration((long) (Math.abs((layoutParams.topMargin+headHeight) * 0.66)));
+            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    float nowDistance = (float) animation.getAnimatedValue();
+                    layoutParams.topMargin= (int) nowDistance;
+                    headView.setLayoutParams(layoutParams);
                 }
-                publishProgress(topMargin);
-                try {
-                    Thread.sleep(5);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            });
+            valueAnimator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    headView.setLayoutParams(layoutParams);
+                    mRefreshEvent.finishRefresh();
                 }
-            }
-            return topMargin;
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            layoutParams.topMargin=values[0];
-            headView.setLayoutParams(layoutParams);
-        }
-
-        //处理异步所得结果
-        @Override
-        protected void onPostExecute(Integer integer) {
-            layoutParams.topMargin=-headHeight;
-            headView.setLayoutParams(layoutParams);
-           mRefreshEvent.finishRefresh();
+            });
+            valueAnimator.start();
         }
 
 
