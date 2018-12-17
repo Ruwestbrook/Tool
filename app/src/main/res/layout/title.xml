@@ -11,35 +11,8 @@
         android:layout_height="28dp"
         android:id="@+id/image"
         android:src="@drawable/auction6_1"
-        tools:layout_editor_absoluteX="105dp"
-        tools:layout_editor_absoluteY="2dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         tools:ignore="MissingConstraints" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:text="超IN的低价竞拍"
-        android:id="@+id/text_one"
-        android:layout_marginLeft="10dp"
-        android:textColor="@color/red_text"
-        app:layout_constraintLeft_toRightOf="@+id/image"
-        android:layout_height="wrap_content" />
 
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:text="松开即可刷新"
-        android:layout_marginLeft="10dp"
-        android:id="@+id/tips"
-        android:textColor="@color/red_text"
-        app:layout_constraintTop_toBottomOf="@id/text_one"
-        android:layout_marginTop="5dp"
-        app:layout_constraintLeft_toRightOf="@+id/image"
-        android:layout_height="wrap_content" />
-
-    <ImageView
-        android:layout_width="21dp"
-        android:layout_height="11dp"
-        android:src="@drawable/auction6_2"
-        tools:layout_editor_absoluteX="105dp"
-        tools:layout_editor_absoluteY="28dp"
-        tools:ignore="MissingConstraints" />
 </android.support.constraint.ConstraintLayout>

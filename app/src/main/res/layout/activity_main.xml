@@ -6,14 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <com.tool.russ.view.RefreshView
+    <com.tool.russ.tool.DataView
         android:id="@+id/refresh"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <android.support.v7.widget.RecyclerView
-            android:background="#faf"
-            android:layout_width="match_parent"
-            android:id="@+id/list"
-            android:layout_height="wrap_content"/>
-    </com.tool.russ.view.RefreshView>
+        android:layout_height="200dp">
+    </com.tool.russ.tool.DataView>
 </android.support.constraint.ConstraintLayout>

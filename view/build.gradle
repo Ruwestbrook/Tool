@@ -80,7 +80,7 @@ publish {
     userOrg = 'russ'           //bintray.com 注册的用户名
     groupId = 'com.tool.russ.view'   //以后访问 jcenter上此项目的路径，
     artifactId = 'TxView'       //bintray.com 创建的 Package 名
-    publishVersion = '1.2.0'         //版本号
-    desc = '自定义的TexView' //版本说明
+    publishVersion = '1.6.0'         //版本号
+    desc = '修复一些bug,新增CircleView' //版本说明
     website = 'https://github.com/Ruwestbrook/Tool'    //关于这个开源项目的网站
 }
