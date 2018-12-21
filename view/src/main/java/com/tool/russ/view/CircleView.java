@@ -66,7 +66,7 @@ public class CircleView extends android.support.v7.widget.AppCompatImageView {
     @SuppressLint("DrawAllocation")
     @Override
     protected void onDraw(Canvas canvas) {
-       // super.onDraw(canvas);
+        // super.onDraw(canvas);
         Bitmap bitmap=getBitmap();
         Paint mPaint=new Paint();
         BitmapShader shader=new BitmapShader(bitmap,BitmapShader.TileMode.CLAMP,BitmapShader.TileMode.CLAMP);
@@ -79,7 +79,7 @@ public class CircleView extends android.support.v7.widget.AppCompatImageView {
         if(type==2){
             canvas.drawRoundRect(new RectF(0,0,width,height),radius,radius,mPaint);
         }else {
-             canvas.drawCircle(getWidth()/2, getWidth()/2, getWidth()/2, mPaint);
+            canvas.drawCircle(getWidth()/2, getWidth()/2, getWidth()/2, mPaint);
         }
     }
 

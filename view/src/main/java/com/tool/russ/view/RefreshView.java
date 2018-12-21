@@ -54,6 +54,7 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
     private boolean canPull;
 
     private RefreshListener listener;
+    private boolean otherHead=false;
 
     private int pullHeight;
     private RefreshEvent mRefreshEvent;
@@ -84,46 +85,62 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
         mRefreshEvent=new RefreshEvent() {
             @Override
             public void canRefresh() {
-                textView.setText("释放更新");
-                Animation animation=AnimationUtils.loadAnimation(mContext,R.anim.rotate_one);
-                imageView.startAnimation(animation);
+                if(!otherHead){
+                    textView.setText("释放更新");
+                    Animation animation=AnimationUtils.loadAnimation(mContext,R.anim.rotate_one);
+                    imageView.startAnimation(animation);
+                }
+
 
             }
 
             @Override
             public void cancelRefresh() {
-                textView.setText("下拉刷新");
+                if(!otherHead){
+                    textView.setText("下拉刷新");
 
-                Animation animation=AnimationUtils.loadAnimation(mContext,R.anim.rotate_two);
-                imageView.startAnimation(animation);
+                    Animation animation=AnimationUtils.loadAnimation(mContext,R.anim.rotate_two);
+                    imageView.startAnimation(animation);
+                }
+
 
             }
 
             //开始刷新
             @Override
             public void startRefresh() {
-                Log.d(TAG, "startRefresh:正在刷新正在刷新 "+textView.toString());
+
                 currentStatus=STATUS_REFRESH;
 
                 textView.setText("正在刷新");
                 //endRefresh();
-                imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.rotate));
-                Animation animation=AnimationUtils.loadAnimation(mContext,R.anim.rotate_three);
-                animation.setInterpolator(new LinearInterpolator());
-                imageView.startAnimation(animation);
+                if(!otherHead){
+                    imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.rotate));
+                    Animation animation=AnimationUtils.loadAnimation(mContext,R.anim.rotate_three);
+                    animation.setInterpolator(new LinearInterpolator());
+                    imageView.startAnimation(animation);
+                }
+
                 listener.refresh();
             }
             //完成了一次刷新,并且隐藏了头部
             @Override
             public void finishRefresh() {
+
+                if(!otherHead){
+                    imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.load));
+                }
                 currentStatus=STATUS_NORMAL;
-                imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.load));
+
 
             }
 
             @Override
             public void onRefresh(int distance) {
-                imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.load));
+                if(!otherHead){
+                    imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.load));
+                }
+
             }
         };
     }
@@ -145,6 +162,7 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
        this.removeViewAt(0);
        addView(headView,0);
         isFirst=false;
+        otherHead=true;
     }
     @SuppressLint("ClickableViewAccessibility")
     @Override
