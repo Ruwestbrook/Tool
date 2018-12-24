@@ -1,43 +1,85 @@
 package com.tool.russ.tool;
 
 import android.annotation.SuppressLint;
-import android.os.Handler;
-import android.os.Message;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
+import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.support.annotation.Nullable;
+import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
-import com.tool.russ.view.RefreshListener;
-import com.tool.russ.view.RefreshView;
-import com.tool.russ.view.TxView;
+public class LineView extends View {
+    /*
+        yAxisLineNum = 0; //y轴刻度数
+         yAxisMax = 0; //y轴最大值
+         yAxisBaseNum = 0; //y轴基准值
+     */
 
-public class MainActivity extends AppCompatActivity {
+    double yAxisLineNum,yAxisBaseNum,yAxisMax;
+    Paint mPaint;
 
-    @SuppressLint("HandlerLeak")
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.activity_main);
-// 图表设置
-
+    public LineView(Context context) {
+        this(context,null);
     }
 
-    double[] draw(){
-        int[] dataArray = new int[10];//[1200.0005,2000.562,52.12,315.95,15,6.95,1562.9658]
-        long dataMax = 0;  //最大数值
-        long dataMaxR = 0; //替代最大数值用来获得位数
-        double yAxisLineNum = 0; //y轴刻度数
-        double yAxisMax = 0; //y轴最大值
+    public LineView(Context context, @Nullable AttributeSet attrs) {
+        this(context, attrs,0);
+    }
+
+    public LineView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        double[] data=new double[]{1200.0005,2000.562,52.12,315.95,15,6.95,1562.9658};
+        draw(data);
+        mPaint=new Paint();
+        mPaint.setTextSize(26);
+        mPaint.setTextAlign(Paint.Align.RIGHT);
+    }
+    @SuppressLint("DrawAllocation")
+    @Override
+    protected void onDraw(Canvas canvas) {
+        canvas.save();
+        //可绘制的宽度左右留出100空白  右边80用于绘制坐标值
+        int width=getMeasuredWidth()-getPaddingRight()-getPaddingLeft()-100;
+        //可绘制的高度 上下留出20空白
+        int height=getMeasuredHeight()-getPaddingTop()-getPaddingBottom()-40;
+
+        Rect rect=new Rect();
+        String s=String.valueOf(yAxisMax);
+        mPaint.getTextBounds(s,0,s.length(),rect);
+        int textHeight=Math.abs(rect.bottom-rect.top);
+        int textWidth=Math.abs(rect.left-rect.right);
+        double stepY=(height-textHeight*yAxisLineNum)/yAxisLineNum;
+
+        int startY=0;
+
+        canvas.translate(100,getMeasuredHeight()-20);
+
+        for (int i = 0; i <= yAxisLineNum; i++) {
+            String text=subZeroAndDot(String.valueOf(yAxisBaseNum*i));
+            canvas.drawText(text,0, startY,mPaint);
+            startY-=stepY+textHeight;
+        }
+    }
+
+
+      String subZeroAndDot(String s){
+        if(s.indexOf(".") > 0){
+            s = s.replaceAll("0+?$", "");//去掉多余的0
+            s = s.replaceAll("[.]$", "");//如最后一位是.则去掉
+        }
+        return s;
+    }
+
+    void draw(double[] dataArray){
+        //int[] dataArray = new int[10];//[1200.0005,2000.562,52.12,315.95,15,6.95,1562.9658]
+        double dataMax = 0;  //最大数值
+        double dataMaxR = 0; //替代最大数值用来获得位数
+         yAxisLineNum = 0; //y轴刻度数
+         yAxisMax = 0; //y轴最大值
+
+         yAxisBaseNum = 0; //y轴基准值
         double yAxisMaxNum = 0; //y轴最大值个数位
-        double yAxisBaseNum = 0; //y轴基准值
         boolean isDecimal = false;
         int figure = 0; //最大数值位数
         // 获得最大值
@@ -125,11 +167,9 @@ public class MainActivity extends AppCompatActivity {
         //yAxisLineNum = 0; //y轴刻度数
         //  yAxisBaseNum = 0; //y轴基准值
         //yAxisMax最大值
-
         if (bit == 0) {
             yAxisMax = 1;
             yAxisBaseNum = 0.2;
         }
-        return new double[]{yAxisLineNum,yAxisBaseNum,yAxisMax};
     }
 }

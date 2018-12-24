@@ -6,11 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <com.tool.russ.tool.DataView
+    <com.tool.russ.tool.LineView
         android:id="@+id/refresh"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_width="match_parent"
         android:layout_height="200dp">
-    </com.tool.russ.tool.DataView>
+    </com.tool.russ.tool.LineView>
 </android.support.constraint.ConstraintLayout>
