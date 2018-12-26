@@ -3,6 +3,8 @@ package com.tool.russ.tool;
 import android.annotation.SuppressLint;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+
 public class MainActivity extends AppCompatActivity {
 
     @SuppressLint("HandlerLeak")
@@ -11,14 +13,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+        double[] result=draw();
+        for (int i = 0; i < result.length; i++) {
+            Log.d("datass", "onCreate: "+result[i]);
+        }
 // 图表设置
 
     }
 
     double[] draw(){
-        int[] dataArray = new int[10];//[1200.0005,2000.562,52.12,315.95,15,6.95,1562.9658]
-        long dataMax = 0;  //最大数值
-        long dataMaxR = 0; //替代最大数值用来获得位数
+        double[] dataArray = new double[]{1200.0005,2000.562,52.12,315.95,15,6.95,1562.9658};
+        double dataMax = 0;  //最大数值
+        double dataMaxR = 0; //替代最大数值用来获得位数
         double yAxisLineNum = 0; //y轴刻度数
         double yAxisMax = 0; //y轴最大值
         double yAxisMaxNum = 0; //y轴最大值个数位
@@ -115,6 +121,10 @@ public class MainActivity extends AppCompatActivity {
             yAxisMax = 1;
             yAxisBaseNum = 0.2;
         }
-        return new double[]{yAxisLineNum,yAxisBaseNum,yAxisMax};
+        double[] x=new double[(int) yAxisLineNum+1];
+        for (int i = 0; i <(int) yAxisLineNum+1; i++) {
+            x[i]=i*yAxisBaseNum;
+        }
+        return x;
     }
 }
