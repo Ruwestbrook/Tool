@@ -1,4 +1,4 @@
-package com.tool.russ.view;
+package com.tool.russ.view.custom;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -14,6 +14,8 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
+
+import com.tool.russ.view.R;
 
 public class CircleView extends android.support.v7.widget.AppCompatImageView {
     private static final String TAG = "CircleView";
@@ -40,8 +42,7 @@ public class CircleView extends android.support.v7.widget.AppCompatImageView {
 
     public CircleView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        @SuppressLint("Recycle")
-        TypedArray array=context.obtainStyledAttributes(attrs,R.styleable.CircleView);
+        TypedArray array=context.obtainStyledAttributes(attrs, R.styleable.CircleView);
         type=array.getInt(R.styleable.CircleView_circleType,0);
         radius=array.getDimensionPixelSize(R.styleable.CircleView_circleRadius,20);
         array.recycle();

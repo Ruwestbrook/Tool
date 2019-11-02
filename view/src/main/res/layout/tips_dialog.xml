@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="15dp"
+    android:layout_height="wrap_content">
+
+
+
+
+    <com.tool.russ.view.dialog.TipView
+        android:layout_width="80dp"
+        android:id="@+id/tips"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_height="80dp" />
+
+
+    <TextView
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tips"
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:id="@+id/title"
+        android:textColor="#595959"
+        android:text="@string/title"
+        android:textSize="20sp"
+        android:layout_marginTop="20dp"
+        android:layout_height="wrap_content" />
+
+
+    <TextView
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@id/title"
+        android:layout_marginTop="45dp"
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:id="@+id/text"
+        android:textSize="15sp"
+        android:textColor="#585858"
+        android:text="Hello World!"
+        android:layout_height="wrap_content" />
+
+    <com.tool.russ.view.custom.TxView
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/text"
+        android:layout_marginTop="20dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_width="86dp"
+        android:id="@+id/confirm"
+        app:layout_constraintLeft_toRightOf="@id/cancel"
+        android:text="@string/confirm"
+        android:layout_height="32dp"
+        app:backColor="@color/confirm"
+        app:radius="10dp"
+        app:normalTextColor="@color/white" />
+
+
+    <com.tool.russ.view.custom.TxView
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/text"
+        android:layout_marginTop="20dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/confirm"
+        app:backColor="@color/cancel"
+        app:radius="10dp"
+        android:visibility="gone"
+        android:layout_width="86dp"
+        android:id="@+id/cancel"
+        android:textSize="12sp"
+        app:normalTextColor="@color/cancel_text"
+        android:text="@string/cancel"
+        android:layout_height="32dp" />
+
+
+</android.support.constraint.ConstraintLayout>

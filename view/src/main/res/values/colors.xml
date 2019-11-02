@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="white">#ffffff</color>
+    <color name="white">#FFFFFF</color>
+    <color name="normal">#7f8c8d</color>
+    <color name="finish">#3498db</color>
+    <color name="confirm">#7cd1f9</color>
+    <color name="cancel">#efefef</color>
+    <color name="cancel_text">#555</color>
+    <color name="transparent">#00000000</color>
 </resources>

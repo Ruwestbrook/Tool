@@ -15,7 +15,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="ContentDescription,MissingConstraints" />
 
 
     <TextView
@@ -27,6 +27,6 @@
         android:layout_height="wrap_content"
         android:alpha="0.6"
         android:textColor="#515151"
-        android:text="下拉刷新" />
+        android:text="@string/refresh_title" />
 
 </android.support.constraint.ConstraintLayout>

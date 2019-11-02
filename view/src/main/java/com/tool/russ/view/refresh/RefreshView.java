@@ -1,4 +1,4 @@
-package com.tool.russ.view;
+package com.tool.russ.view.refresh;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -6,9 +6,6 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,7 +23,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tool.russ.view.R;
 
+
+@SuppressWarnings("unused")
 public class RefreshView extends LinearLayout implements View.OnTouchListener {
     private static final String TAG = "RefreshView";
     //正常状态
@@ -38,17 +38,25 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
     //刷新状态
     private static final int STATUS_REFRESH=3;
 
+    //当前状态
     private int currentStatus=0;
 
 
 
     //刷新头部
     private View headView;
+    private View footerView;
+
+
 
     private Context mContext;
 
     //刷新头部高度
     private int headHeight;
+
+    //加载更多尾部的高度
+    private int footerHeight;
+
     private int touchSlop;
     //当前是否可以下拉刷新
     private boolean canPull;
@@ -56,16 +64,22 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
     private RefreshListener listener;
     private boolean otherHead=false;
 
-    private int pullHeight;
+
+
+
+    //刷新事件
     private RefreshEvent mRefreshEvent;
     private RecyclerView mRecyclerView;
-    LinearLayout.LayoutParams layoutParams;
+    //刷新头部的LayoutParams
+    LinearLayout.LayoutParams pullLayoutParams;
+    //加载更多尾部的LayoutParams
+    LinearLayout.LayoutParams loadLayoutParams;
     public RefreshView(Context context) {
         this(context,null);
     }
     private boolean isFirst=false;
-    TextView textView;
-    ImageView imageView;
+    TextView pullTextView;
+    ImageView pullImageView;
     public RefreshView(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs,0);
     }
@@ -77,18 +91,18 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
         setOrientation(LinearLayout.VERTICAL);
         setLongClickable(true);
         headView=LayoutInflater.from(context).inflate(R.layout.refresh_title,this,false);
-         textView=headView.findViewById(R.id.text);
-        imageView=headView.findViewById(R.id.image);
-        imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.load));
+        pullTextView=headView.findViewById(R.id.text);
+        pullImageView=headView.findViewById(R.id.image);
+        pullImageView.setImageDrawable(context.getResources().getDrawable(R.drawable.load));
         addView(headView,0);
         touchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         mRefreshEvent=new RefreshEvent() {
             @Override
             public void canRefresh() {
                 if(!otherHead){
-                    textView.setText("释放更新");
+                    pullTextView.setText("释放更新");
                     Animation animation=AnimationUtils.loadAnimation(mContext,R.anim.rotate_one);
-                    imageView.startAnimation(animation);
+                    pullImageView.startAnimation(animation);
                 }
 
 
@@ -97,10 +111,10 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
             @Override
             public void cancelRefresh() {
                 if(!otherHead){
-                    textView.setText("下拉刷新");
+                    pullTextView.setText("下拉刷新");
 
                     Animation animation=AnimationUtils.loadAnimation(mContext,R.anim.rotate_two);
-                    imageView.startAnimation(animation);
+                    pullImageView.startAnimation(animation);
                 }
 
 
@@ -112,13 +126,13 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
 
                 currentStatus=STATUS_REFRESH;
 
-                textView.setText("正在刷新");
+                pullTextView.setText("正在刷新");
                 //endRefresh();
                 if(!otherHead){
-                    imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.rotate));
+                    pullImageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.rotate));
                     Animation animation=AnimationUtils.loadAnimation(mContext,R.anim.rotate_three);
                     animation.setInterpolator(new LinearInterpolator());
-                    imageView.startAnimation(animation);
+                    pullImageView.startAnimation(animation);
                 }
 
                 listener.refresh();
@@ -128,7 +142,7 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
             public void finishRefresh() {
 
                 if(!otherHead){
-                    imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.load));
+                    pullImageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.load));
                 }
                 currentStatus=STATUS_NORMAL;
 
@@ -138,25 +152,39 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
             @Override
             public void onRefresh(int distance) {
                 if(!otherHead){
-                    imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.load));
+                    pullImageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.load));
                 }
 
             }
         };
-    }
 
+
+
+        //设置footerView
+        footerView=LayoutInflater.from(context).inflate(R.layout.refresh_title,this,false);
+
+
+
+
+
+
+    }
+    @SuppressWarnings("unused")
     public  void setRefreshing(boolean refreshing){
         if(!refreshing && currentStatus==STATUS_REFRESH){
             new HideHeader().start();
         }
     }
+    @SuppressWarnings("unused")
     public void setRefreshEvent(RefreshEvent refreshEvent){
         mRefreshEvent=refreshEvent;
     }
-
+    @SuppressWarnings("unused")
     public void setOnRefreshListener(RefreshListener listener){
         this.listener=listener;
     }
+
+    @SuppressWarnings("unused")
     public void setHeadView(View headView) {
         this.headView = headView;
        this.removeViewAt(0);
@@ -171,15 +199,31 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
         if(changed && !isFirst){
             isFirst=true;
             headHeight=headView.getMeasuredHeight();
-            layoutParams= (LayoutParams) headView.getLayoutParams();
-            if(layoutParams==null){
-                layoutParams=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+            pullLayoutParams= (LayoutParams) headView.getLayoutParams();
+            if(pullLayoutParams==null){
+                pullLayoutParams=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
             }
-            pullHeight=headHeight;
-            layoutParams.topMargin=-headHeight;
-            headView.setLayoutParams(layoutParams);
+            pullLayoutParams.topMargin=-headHeight;
+            headView.setLayoutParams(pullLayoutParams);
             mRecyclerView= (RecyclerView) getChildAt(1);
             mRecyclerView.setOnTouchListener(this);
+
+            //设置尾部
+            footerHeight=footerView.getMeasuredHeight();
+            Log.d(TAG, "onLayout: footerHeight="+footerHeight);
+            loadLayoutParams= (LayoutParams) footerView.getLayoutParams();
+            if(loadLayoutParams==null){
+                loadLayoutParams=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT);
+            }
+
+            loadLayoutParams.topMargin=getMeasuredHeight()-footerHeight;
+            Log.d(TAG, "onLayout: loadLayoutParams.topMargin="+(getMeasuredHeight()-footerHeight));
+            footerView.setLayoutParams(loadLayoutParams);
+            addView(footerView,2);
+
+
+
         }
 
     }
@@ -202,8 +246,8 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
                     }else if(currentStatus==STATUS_PULL){
                         //无法刷新 但是要隐藏刷新头部
                         downY=0;
-                        layoutParams.topMargin=-headHeight;
-                        headView.setLayoutParams(layoutParams);
+                        pullLayoutParams.topMargin=-headHeight;
+                        headView.setLayoutParams(pullLayoutParams);
                     }
                     break;
                 case MotionEvent.ACTION_DOWN:
@@ -218,16 +262,16 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
                     if (distance < touchSlop) {
                         return false;
                     }
-                        if(distance>=pullHeight && currentStatus!=STATUS_CAN_REFRESH){
+                        if(distance>=headHeight && currentStatus!=STATUS_CAN_REFRESH){
                             currentStatus=STATUS_CAN_REFRESH;
                             mRefreshEvent.canRefresh();
                         }
-                        if(distance<pullHeight && currentStatus!=STATUS_PULL) {
+                        if(distance<headHeight && currentStatus!=STATUS_PULL) {
                             currentStatus=STATUS_PULL;
                             mRefreshEvent.cancelRefresh();
                         }
-                    layoutParams.topMargin=-headHeight+distance;
-                    headView.setLayoutParams(layoutParams);
+                    pullLayoutParams.topMargin=-headHeight+distance;
+                    headView.setLayoutParams(pullLayoutParams);
                     mRefreshEvent.onRefresh(-headHeight+distance);
                     return true;
             }
@@ -246,14 +290,11 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
                     }
                     canPull=true;
                 }else {
-                    if(layoutParams.topMargin!=-headHeight){
-                            layoutParams.topMargin=-headHeight;
-                            headView.setLayoutParams(layoutParams);
+                    if(pullLayoutParams.topMargin!=-headHeight){
+                        pullLayoutParams.topMargin=-headHeight;
+                            headView.setLayoutParams(pullLayoutParams);
                         }
                         canPull=false;
-
-
-
                 }
             }else {
                 canPull=true;
@@ -265,22 +306,52 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
 
 
 
+
+    /*
+        是否能加载更多
+     */
+    private void canLoadMore(MotionEvent motionEvent) {
+        if(mRecyclerView!=null){
+            LinearLayoutManager layoutManager= (LinearLayoutManager) mRecyclerView.getLayoutManager();
+            View view=mRecyclerView.getChildAt(layoutManager.getChildCount()-1);
+            if(view!=null){
+                if(view.getBottom()==0 && layoutManager.findLastCompletelyVisibleItemPosition()==(layoutManager.getChildCount()-1)){
+                    if(!canPull){
+                        downY=motionEvent.getRawY();
+                    }
+                    canPull=true;
+                }else {
+                    if(pullLayoutParams.topMargin!=-headHeight){
+                        pullLayoutParams.topMargin=-headHeight;
+                        headView.setLayoutParams(pullLayoutParams);
+                    }
+                    canPull=false;
+                }
+            }else {
+                canPull=true;
+            }
+        }
+
+    }
+
+
+
     class HideHeader{
 
         void start(){
-            ValueAnimator valueAnimator = ObjectAnimator.ofFloat(layoutParams.topMargin, -headHeight).setDuration((long) (Math.abs((layoutParams.topMargin+headHeight) * 0.66)));
+            ValueAnimator valueAnimator = ObjectAnimator.ofFloat(pullLayoutParams.topMargin, -headHeight).setDuration((long) (Math.abs((pullLayoutParams.topMargin+headHeight) * 0.66)));
             valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
                     float nowDistance = (float) animation.getAnimatedValue();
-                    layoutParams.topMargin= (int) nowDistance;
-                    headView.setLayoutParams(layoutParams);
+                    pullLayoutParams.topMargin= (int) nowDistance;
+                    headView.setLayoutParams(pullLayoutParams);
                 }
             });
             valueAnimator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    headView.setLayoutParams(layoutParams);
+                    headView.setLayoutParams(pullLayoutParams);
                     mRefreshEvent.finishRefresh();
                 }
             });

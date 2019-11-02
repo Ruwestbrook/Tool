@@ -1,4 +1,4 @@
-package com.tool.russ.view;
+package com.tool.russ.view.custom;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -7,9 +7,11 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
+
+import com.tool.russ.view.R;
 
 
 public class TxView extends android.support.v7.widget.AppCompatTextView {
@@ -18,25 +20,24 @@ public class TxView extends android.support.v7.widget.AppCompatTextView {
     private GradientDrawable pressBgDrawable;
     private boolean isSelect;
     private boolean isPress;
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+
     public TxView(Context context) {
         this(context,null);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public TxView(Context context, AttributeSet attrs) {
         this(context, attrs,0);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+
     public TxView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         bgDrawable=new GradientDrawable();
         selectBgDrawable=new GradientDrawable();
         pressBgDrawable=new GradientDrawable();
-
+        setIncludeFontPadding(true);
         @SuppressLint("Recycle")
-        TypedArray array=context.obtainStyledAttributes(attrs,R.styleable.TxView,defStyleAttr,0);
+        TypedArray array=context.obtainStyledAttributes(attrs, R.styleable.TxView,defStyleAttr,0);
         float radius=array.getDimension(R.styleable.TxView_radius,0);
         float topLeftRadius=array.getDimension(R.styleable.TxView_TopLeftRadius,0);
         float topRightRadius=array.getDimension(R.styleable.TxView_TopRightRadius,0);
@@ -143,7 +144,8 @@ public class TxView extends android.support.v7.widget.AppCompatTextView {
 
         //设置textColor
 
-        int normalTextColor=array.getColor(R.styleable.TxView_normalTextColor,white);
+        int textColor= Color.parseColor("#343434");
+        int normalTextColor=array.getColor(R.styleable.TxView_normalTextColor,textColor);
         int selectTextColor=array.getColor(R.styleable.TxView_selectTextColor,normalTextColor);
         int pressTextColor=array.getColor(R.styleable.TxView_pressTextColor,normalTextColor);
         setTextColor(normalTextColor,(isSelect?selectTextColor:normalTextColor),(isPress?pressTextColor:normalTextColor));
@@ -169,29 +171,64 @@ public class TxView extends android.support.v7.widget.AppCompatTextView {
      * @param topRightRadius 右上的圆角度数
      */
     void setRadius(float bottomLeftRadius,float bottomRightRadius, float topLeftRadius ,float topRightRadius){
-        bgDrawable.setCornerRadii(new float[]{topLeftRadius,topLeftRadius,
+        float[] data=new float[]{topLeftRadius,topLeftRadius,
                 topRightRadius,topRightRadius,
                 bottomRightRadius,bottomRightRadius,
-                bottomLeftRadius,bottomLeftRadius});
+                bottomLeftRadius,bottomLeftRadius};
+
+        bgDrawable.setCornerRadii(data);
+
         if(isSelect)
-            selectBgDrawable.setCornerRadii(new float[]{topLeftRadius,topLeftRadius,
-                topRightRadius,topRightRadius,
-                bottomRightRadius,bottomRightRadius,
-                bottomLeftRadius,bottomLeftRadius});
+            selectBgDrawable.setCornerRadii(data);
+
         if(isPress)
-            pressBgDrawable.setCornerRadii(new float[]{topLeftRadius,topLeftRadius,
-                topRightRadius,topRightRadius,
-                bottomRightRadius,bottomRightRadius,
-                bottomLeftRadius,bottomLeftRadius});
+            pressBgDrawable.setCornerRadii(data);
     }
 
 
     public void setTextColor(int normalColor,int selectColor,int pressColor) {
-     int[][] states=new int[3][1];
+        int[][] states=new int[3][1];
         states[0] = new int[]{android.R.attr.state_selected};
         states[1] = new int[]{android.R.attr.state_pressed};
         states[2] = new int[]{};
         ColorStateList list=new ColorStateList(states,new int[]{selectColor,pressColor,normalColor});
         setTextColor(list);
+    }
+
+
+    /*
+        当手指抬起时，如果当前时间和之前记录时间相差
+     */
+
+    private long clickTime=0;
+
+    @SuppressWarnings("unused")
+    public int getiIntervalTime() {
+        return intervalTime;
+    }
+
+    @SuppressWarnings("unused")
+    public void setIntervalTime(int intervalTime) {
+        this.intervalTime = intervalTime;
+    }
+
+    private int intervalTime=1500;
+
+    private static final String TAG = "MainActivity";
+
+
+    @SuppressLint("ClickableViewAccessibility")
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+        if(event.getAction()==MotionEvent.ACTION_UP){
+            if(System.currentTimeMillis()-clickTime<intervalTime){
+                Log.d(TAG, "onTouchEvent: ");
+                return  true;
+            }
+            clickTime=System.currentTimeMillis();
+        }
+
+        return super.onTouchEvent(event);
     }
 }
