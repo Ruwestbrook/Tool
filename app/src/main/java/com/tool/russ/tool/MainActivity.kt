@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 2->{
-                    refresh.finishRefresh()
+                    //refresh.finishRefresh()
                 }
             }
 
@@ -43,33 +43,36 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        ToolView.init(this)
-        val recyclerView = findViewById<RecyclerView>(R.id.list)
-        recyclerView.adapter=object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.item, parent, false)
-                return object : RecyclerView.ViewHolder(view) {}
-            }
-
-            override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-
-            }
-
-            override fun getItemCount(): Int {
-                return 20
-            }
-        }
-
-        recyclerView.layoutManager = LinearLayoutManager(this)
 
 
-        refresh.setListener(object:RefreshListener(){
-            override fun refresh() {
-                handler.sendEmptyMessageDelayed(2,3000)
 
-            }
-
-        })
+//        ToolView.init(this)
+//        val recyclerView = findViewById<RecyclerView>(R.id.list)
+//        recyclerView.adapter=object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+//            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+//                val view = LayoutInflater.from(parent.context).inflate(R.layout.item, parent, false)
+//                return object : RecyclerView.ViewHolder(view) {}
+//            }
+//
+//            override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+//
+//            }
+//
+//            override fun getItemCount(): Int {
+//                return 20
+//            }
+//        }
+//
+//        recyclerView.layoutManager = LinearLayoutManager(this)
+//
+//
+//        refresh.setListener(object:RefreshListener(){
+//            override fun refresh() {
+//                handler.sendEmptyMessageDelayed(2,3000)
+//
+//            }
+//
+//        })
 
     }
 

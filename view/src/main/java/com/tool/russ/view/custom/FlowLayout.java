@@ -27,7 +27,7 @@ public class FlowLayout extends LinearLayout {
         int measureWidth=MeasureSpec.getSize(widthMeasureSpec);
         int count=getChildCount();
         int width=0;
-        int height=0;
+        int height=getPaddingTop();
         int lineHeight=0;
         for (int i = 0; i < count; i++) {
             View child=getChildAt(i);
@@ -35,7 +35,7 @@ public class FlowLayout extends LinearLayout {
             LinearLayout.LayoutParams layoutParams= (LinearLayout.LayoutParams) child.getLayoutParams();
             int childWidth=child.getMeasuredWidth()+layoutParams.leftMargin+layoutParams.rightMargin;
             int childHeight=child.getMeasuredHeight()+layoutParams.topMargin+layoutParams.bottomMargin;
-            if(childWidth+width>measureWidth){
+            if(childWidth+width>(measureWidth-getPaddingLeft()-getPaddingRight())){
                 //需要换行
                 height+=lineHeight;
                 lineHeight=childHeight;
@@ -47,6 +47,7 @@ public class FlowLayout extends LinearLayout {
             if(i==count-1)
                 height+=lineHeight;
         }
+        height+=getPaddingBottom();
         setMeasuredDimension(measureWidth,height);
     }
 
@@ -62,13 +63,13 @@ public class FlowLayout extends LinearLayout {
         super.onLayout(changed, l, t, r, b);
 
         int count=getChildCount();
-        int left=0,top=0,height=0;
+        int left=0,top=getPaddingTop(),height=0;
         for (int i = 0; i < count; i++) {
             View child=getChildAt(i);
             LinearLayout.LayoutParams layoutParams= (LinearLayout.LayoutParams) child.getLayoutParams();
             int childWidth=child.getMeasuredWidth()+layoutParams.leftMargin+layoutParams.rightMargin;
             int childHeight=child.getMeasuredHeight()+layoutParams.topMargin+layoutParams.bottomMargin;
-            if(left+childWidth>=getMeasuredWidth()){
+            if(left+childWidth>=(getMeasuredWidth()-getPaddingLeft()-getPaddingRight())){
                 left=0;
                 top+=height;
                 height=0;

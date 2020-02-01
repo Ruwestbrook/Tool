@@ -79,4 +79,19 @@
 
     </declare-styleable>
 
+
+    <declare-styleable name="AutoSizeView">
+
+        <attr name="text" format="string"/>
+        <attr name="textColor" format="color"/>
+        <attr name="gravity" format="enum">
+
+            <enum name="top" value="1"/>
+            <enum name="bottom" value="2"/>
+            <enum name="center" value="0"/>
+
+        </attr>
+
+    </declare-styleable>
+
 </resources>

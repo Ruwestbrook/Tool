@@ -1,12 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:ignore="MissingConstraints"
     tools:context=".MainActivity">
+
+
+    <com.tool.russ.view.custom.AutoSizeView
+        android:layout_gravity="center"
+        android:layout_width="100dp"
+        android:background="#ff00ff"
+        app:text="100,000.00"
+        app:gravity="top"
+        android:id="@+id/text"
+        android:layout_height="wrap_content"/>
 
 
     <!--<com.tool.russ.view.custom.ProgressNumber-->
@@ -36,17 +47,17 @@
         <!--tools:ignore="HardcodedText" />-->
 
 
-    <com.tool.russ.view.refresh.RefreshLayout
-        android:layout_width="match_parent"
-        android:id="@+id/refresh"
-        android:layout_height="match_parent">
+<!--    <com.tool.russ.view.refresh.RefreshLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:id="@+id/refresh"-->
+<!--        android:layout_height="match_parent">-->
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/list"
-            android:background="@color/confirm"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+<!--        <android.support.v7.widget.RecyclerView-->
+<!--            android:id="@+id/list"-->
+<!--            android:background="@color/confirm"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"/>-->
 
-    </com.tool.russ.view.refresh.RefreshLayout>
+<!--    </com.tool.russ.view.refresh.RefreshLayout>-->
 
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>
