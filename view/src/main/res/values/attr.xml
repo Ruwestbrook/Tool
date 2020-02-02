@@ -94,4 +94,10 @@
 
     </declare-styleable>
 
+
+    <declare-styleable name="EditClearText">
+
+        <attr name="closeColor" format="color"/>
+    </declare-styleable>
+
 </resources>
