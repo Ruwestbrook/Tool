@@ -129,5 +129,8 @@
         <attr name="drawable_width" format="dimension"/>
     </declare-styleable>
 
+    <declare-styleable name="EditClearText">
+        <attr name="drawable" format="integer"/>
+    </declare-styleable>
 
 </resources>

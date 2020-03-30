@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tool.russ.view.custom.AutoSizeView
+<TextView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    app:text="这是一个Item"
+    android:text="这是一个Item"
+    android:gravity="center"
+    android:textSize="20sp"
     android:id="@+id/text"
+    android:textColor="#333"
+    android:background="@color/white"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_height="80dp">
-
-
-</com.tool.russ.view.custom.AutoSizeView>
+    android:layout_height="80dp"/>

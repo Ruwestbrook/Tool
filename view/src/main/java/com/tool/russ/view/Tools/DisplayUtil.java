@@ -7,7 +7,7 @@ import com.tool.russ.view.ToolView;
  * time: 2020-02-01:20:11
  * describe：屏幕工具类
  */
-public final class DisplayTools {
+public final class DisplayUtil {
 
 
     /*

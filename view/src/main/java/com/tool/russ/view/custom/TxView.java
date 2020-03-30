@@ -14,7 +14,7 @@ import android.view.MotionEvent;
 import com.tool.russ.view.R;
 
 
-public class TxView extends android.support.v7.widget.AppCompatTextView {
+public class TxView extends androidx.appcompat.widget.AppCompatTextView {
     private GradientDrawable bgDrawable;
     private GradientDrawable selectBgDrawable;
     private GradientDrawable pressBgDrawable;

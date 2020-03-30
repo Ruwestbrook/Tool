@@ -5,9 +5,13 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+
 import android.util.AttributeSet;
 
 import androidx.annotation.Nullable;
+
+import com.tool.russ.view.R;
+
 
 public class AutoDrawableView extends androidx.appcompat.widget.AppCompatTextView {
     public AutoDrawableView(Context context) {
@@ -23,7 +27,7 @@ public class AutoDrawableView extends androidx.appcompat.widget.AppCompatTextVie
 
     public AutoDrawableView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        TypedArray array=context.obtainStyledAttributes(attrs,R.styleable.AutoDrawableView);
+        TypedArray array=context.obtainStyledAttributes(attrs, R.styleable.AutoDrawableView);
 
         drawableHeight= (int) array.getDimension(R.styleable.AutoDrawableView_drawable_height,0);
         drawableWidth= (int) array.getDimension(R.styleable.AutoDrawableView_drawable_width,0);
