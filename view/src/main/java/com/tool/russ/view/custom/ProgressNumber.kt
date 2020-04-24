@@ -3,7 +3,7 @@ package com.tool.russ.view.custom
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View
 import com.tool.russ.view.R

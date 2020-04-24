@@ -10,24 +10,37 @@
     tools:context=".MainActivity">
 
 
+        <com.tool.russ.view.custom.EditClearText
+            android:layout_width="match_parent"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:gravity="center|left"
+            android:maxLines="1"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:layout_height="40dp"/>
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="100dp"/>
-
-    <com.tool.russ.view.custom.EditClearText
-        android:layout_gravity="center"
-        android:layout_width="200dp"
-
-        android:id="@+id/text"
-        android:maxLines="1"
-        android:layout_height="40dp"/>
-
-<!--    -->
-<!--    <TextView-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:maxLines="1"-->
+<!--    <com.tool.russ.view.custom.AutoSizeView-->
+<!--        android:layout_gravity="center"-->
+<!--        android:layout_width="100dp"-->
+<!--        android:background="#ff00ff"-->
+<!--        app:text="100,000.00"-->
+<!--        app:gravity="top"-->
+<!--        android:id="@+id/text"-->
 <!--        android:layout_height="wrap_content"/>-->
+
+
+
+
+
+<!--    <ImageView-->
+<!--        android:layout_width="50dp"-->
+<!--        android:id="@+id/image"-->
+<!--        android:layout_marginTop="50dp"-->
+<!--        android:layout_gravity="center"-->
+<!--        android:layout_height="50dp"/>-->
+
+
 
     <!--<com.tool.russ.view.custom.ProgressNumber-->
         <!--android:layout_width="0dp"-->
@@ -61,9 +74,8 @@
 <!--        android:id="@+id/refresh"-->
 <!--        android:layout_height="match_parent">-->
 
-<!--        <android.support.v7.widget.RecyclerView-->
+<!--        <androidx.recyclerview.widget.RecyclerView-->
 <!--            android:id="@+id/list"-->
-<!--            android:background="@color/confirm"-->
 <!--            android:layout_width="match_parent"-->
 <!--            android:layout_height="match_parent"/>-->
 

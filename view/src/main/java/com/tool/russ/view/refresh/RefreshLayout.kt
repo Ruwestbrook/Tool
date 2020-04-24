@@ -6,9 +6,9 @@ import android.animation.Animator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.util.AttributeSet
 import android.util.Log
 import android.view.*
@@ -213,7 +213,7 @@ class RefreshLayout(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) 
 
             removeView(footerView)
 
-            if(getChildAt(1) is RecyclerView ){
+            if(getChildAt(1) is RecyclerView){
 
                 Log.d("RefreshLayout", "是")
 

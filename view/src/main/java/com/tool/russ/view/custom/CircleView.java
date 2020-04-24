@@ -11,13 +11,13 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
 
 import com.tool.russ.view.R;
 
-public class CircleView extends android.support.v7.widget.AppCompatImageView {
+public class CircleView extends androidx.appcompat.widget.AppCompatImageView {
     private static final String TAG = "CircleView";
     private int width;
     private int height;

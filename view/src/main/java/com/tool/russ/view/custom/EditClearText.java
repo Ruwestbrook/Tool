@@ -1,25 +1,17 @@
 package com.tool.russ.view.custom;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.View;
-import android.widget.EditText;
+
+import androidx.core.content.ContextCompat;
 
 import com.tool.russ.view.R;
 
@@ -28,187 +20,106 @@ import com.tool.russ.view.R;
  * time: 2019-07-23:09:57
  * describe：自定义的EditText 可以取消输入
  */
-public class EditClearText extends android.support.v7.widget.AppCompatEditText {
-;
-    int closeSize;
-    Drawable drawable;
-
-    int closeColor;
-
+public class EditClearText extends androidx.appcompat.widget.AppCompatEditText {
+    private int size;
     public EditClearText(Context context) {
         this(context,null);
     }
 
     public EditClearText(Context context, AttributeSet attrs) {
-        this(context, attrs,0);
+        this(context, attrs,android.R.attr.editTextStyle);
     }
 
     public EditClearText(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, android.R.attr.editTextStyle);
-
+        super(context, attrs, defStyleAttr);
         TypedArray array=context.obtainStyledAttributes(attrs,R.styleable.EditClearText);
 
-        closeColor=array.getColor(R.styleable.EditClearText_closeColor,Color.parseColor("#DFDFDF"));
+
+        int resId=array.getResourceId(R.styleable.EditClearText_drawable,R.drawable.ic_clear);
+
+
+        drawable= ContextCompat.getDrawable(context,resId);
 
         array.recycle();
-
-        addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-
-                setClose(s.length()>0);
-
-            }
-        });
-
-
-        setOnFocusChangeListener(new OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus){
-                    setClose(getText().length()>0);
-                }else {
-                    setClose(false);
-                }
-
-            }
-        });
-
-
     }
 
+    private static final String TAG = "EditClearText";
+
+
+    private Drawable drawable;
+    private boolean isMeasure=false;
+    int drawableLeft;
+    int drawablePadding;
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        float x=0.8f;
+        if(!isMeasure){
 
-        if (getBackground() instanceof ColorDrawable) {
-          x=0.5f;
+            int paddingRight=getRight();
+
+            size= (int) ((getMeasuredHeight()-getPaddingTop()-getPaddingBottom())*0.75);
+
+            int flag=paddingRight==0?10:0;
+
+            setPadding(getPaddingLeft(),getTop(),getRight()+size+flag,getBottom());
+
+             drawableLeft = getMeasuredWidth() - paddingRight - size-flag;
+
+            drawablePadding = (getMeasuredHeight() - size) / 2;
+
+
+
+            Log.d(TAG, "onMeasure: drawableLeft="+drawableLeft);
+
+
+            isMeasure=true;
+
         }
 
-        closeSize= (int) ((MeasureSpec.getSize(heightMeasureSpec)-getPaddingBottom()-getPaddingTop())*x);
-
-
-        setRightClose();
     }
 
-    void setRightClose(){
-
-       Bitmap bitmap=Bitmap.createBitmap(closeSize,closeSize, Bitmap.Config.ARGB_8888);
-       Canvas canvas=new Canvas(bitmap);
-       Paint paint=new Paint();
-       paint.setColor(closeColor);
-
-
-       int circle=closeSize/2;
-
-
-       canvas.drawCircle(circle,circle,circle,paint);
+    @Override
+    protected void onDraw(Canvas canvas) {
+        Log.d(TAG, "onDraw: ");
+        canvas.save();
+        /*
+         * 需要注意的是当文字内容有多行是，View的高度不变，但是会增加scrollY,所以绘制删除键位置时，需要考虑scrollY的值
+         */
+        int drawableTop = (getMeasuredHeight() +getScrollY()- drawablePadding-size);
+        canvas.translate(drawableLeft,drawableTop);
 
 
 
-       canvas.rotate(45,circle,circle);
+        drawable.setBounds(0,0, size,size);
+        drawable.draw(canvas);
 
 
+        canvas.restore();
 
-
-
-
-       if (getBackground() instanceof ColorDrawable) {
-           ColorDrawable colorDrawable = (ColorDrawable) getBackground();
-           int color = colorDrawable.getColor();
-           paint.setColor(color);
-       }else {
-           paint.setColor(Color.WHITE);
-       }
-
-
-
-
-
-
-       int closeWidth=closeSize/2;
-       int closeHeight=closeSize/8;
-
-
-
-       Rect rect;
-
-       rect=new Rect(circle-closeWidth/2,circle-closeHeight/2,
-               circle+closeWidth/2,circle+closeHeight/2);
-
-       canvas.drawRect(rect,paint);
-
-
-       rect=new Rect(circle-closeHeight/2,circle-closeWidth/2,
-               circle+closeHeight/2,circle+closeWidth/2);
-
-       canvas.drawRect(rect,paint);
-
-
-
-
-       drawable=new BitmapDrawable(bitmap);
-
-
-
-       drawable.setBounds(0,0,closeSize,closeSize);
-
-
-       //setCompoundDrawables(null,null,drawable, null);
+        super.onDraw(canvas);
 
     }
 
 
-    private static final String TAG = "EditClearText";
+
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-
         if(event.getAction()==MotionEvent.ACTION_UP){
-            int x= (int) event.getX();
 
+            if(event.getX()>=drawableLeft && event.getX()<=(drawableLeft+size)&&
+                event.getY()>=drawablePadding && event.getY()<=(drawablePadding+size)){
 
-
-            int left=getMeasuredWidth()-closeSize-getPaddingRight();
-            int right=left+closeSize;
-
-            if(x>left && x<right ){
                 setText("");
-                return  true;
+                return true;
+
             }
-
-
         }
 
 
         return super.onTouchEvent(event);
     }
-
-
-
-    private void  setClose(boolean flag){
-        if(flag){
-            setCompoundDrawables(null,null,drawable, null);
-        }else {
-
-            setCompoundDrawables(null,null,null, null);
-        }
-    }
-
-
-
 }
