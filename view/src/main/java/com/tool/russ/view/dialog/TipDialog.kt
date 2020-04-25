@@ -33,6 +33,7 @@ class TipDialog {
         @JvmStatic
         fun createNormalTips():TipDialog{
             dialog=Dialog(ToolView.context)
+
             dialog?.setContentView(R.layout.tips_dialog)
             return tipDialog
         }

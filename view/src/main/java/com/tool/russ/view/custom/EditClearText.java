@@ -14,6 +14,7 @@ import android.view.MotionEvent;
 import androidx.core.content.ContextCompat;
 
 import com.tool.russ.view.R;
+import com.tool.russ.view.permission.PermissionX;
 
 /**
  * author: russell
@@ -115,6 +116,7 @@ public class EditClearText extends androidx.appcompat.widget.AppCompatEditText {
 
                 setText("");
                 return true;
+
 
             }
         }
