@@ -81,4 +81,11 @@
 
 <!--    </com.tool.russ.view.refresh.RefreshLayout>-->
 
+
+        <com.tool.russ.view.custom.banner.Banner
+            android:layout_width="match_parent"
+            android:id="@+id/banner"
+            android:layout_height="200dp"/>
+
+
 </LinearLayout>

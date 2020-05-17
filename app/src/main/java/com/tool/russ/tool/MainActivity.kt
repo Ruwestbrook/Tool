@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -16,6 +17,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tool.russ.view.ToolView
 import com.tool.russ.view.custom.ProgressNumber
+import com.tool.russ.view.custom.banner.Banner
+import com.tool.russ.view.custom.banner.BannerAdapter
 import com.tool.russ.view.dialog.TipDialog
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -48,7 +51,39 @@ class MainActivity : AppCompatActivity() {
         ToolView.init(this)
         setContentView(R.layout.activity_main)
 
+        val list:MutableList<Int> =ArrayList<Int>()
 
+        list.add(R.drawable.pic)
+        list.add(R.drawable.auction6_1)
+        list.add(R.drawable.auction6_2)
+
+
+
+        @Suppress("UNCHECKED_CAST")
+        val mBanner=banner as Banner<Int>;
+
+
+
+        mBanner.setBannerAdapter(object :BannerAdapter<Int>(){
+
+            override fun getItemView(parent: ViewGroup, viewType: Int): View {
+                return ImageView(parent.context)
+            }
+
+
+            override fun setItem(view: View?, item: Int) {
+                 if(view!=null){
+                     view as ImageView
+                     view.setImageDrawable(ContextCompat.getDrawable(view.context,item))
+                 }
+
+            }
+
+        })
+
+        mBanner.setList(list)
+
+        mBanner.start()
 
 
 
@@ -107,4 +142,10 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private val TAG = "MainActivity"
     }
+
+
+
+
 }
+
+

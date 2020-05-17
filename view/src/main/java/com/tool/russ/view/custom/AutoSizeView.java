@@ -109,7 +109,6 @@ public class AutoSizeView extends View {
         }
         isSize=true;
         int size=(normalWidth/mText.length())-1;
-        Log.d(TAG, "getTextSize: 初始值"+size+"px");
         while (mRect.width()<normalWidth){
             size++;
             mPaint.setTextSize(size);
@@ -117,10 +116,5 @@ public class AutoSizeView extends View {
         }
 
        mPaint.setTextSize(size-1);
-
-        Log.d(TAG, "getTextSize: size="+size+"px");
-        Log.d(TAG, "getTextSize: "+mRect.height());
-        Log.d(TAG, "getTextSize: "+mRect.width());
-
     }
 }

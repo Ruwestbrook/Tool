@@ -133,4 +133,17 @@
         <attr name="drawable" format="integer"/>
     </declare-styleable>
 
+
+
+
+    <declare-styleable name="Banner">
+        <!--   是否重复播放     -->
+        <attr name="auto_play" format="boolean"/>
+        <!--  播放时间间隔 以毫秒为单位       -->
+        <attr name="interval" format="integer"/>
+
+
+
+    </declare-styleable>
+
 </resources>

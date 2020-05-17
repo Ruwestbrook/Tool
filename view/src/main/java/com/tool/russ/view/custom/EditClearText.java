@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -14,7 +12,6 @@ import android.view.MotionEvent;
 import androidx.core.content.ContextCompat;
 
 import com.tool.russ.view.R;
-import com.tool.russ.view.permission.PermissionX;
 
 /**
  * author: russell
@@ -116,12 +113,8 @@ public class EditClearText extends androidx.appcompat.widget.AppCompatEditText {
 
                 setText("");
                 return true;
-
-
             }
         }
-
-
         return super.onTouchEvent(event);
     }
 }
