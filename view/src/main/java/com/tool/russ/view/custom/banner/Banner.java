@@ -3,14 +3,17 @@ package com.tool.russ.view.custom.banner;
 import android.content.Context;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
+
+import com.tool.russ.view.Tools.DisplayUtil;
 
 import java.util.List;
 
@@ -20,6 +23,8 @@ import java.util.List;
  * describe：
  */
 public class Banner<T> extends FrameLayout  {
+
+
 
     //  使用
     ViewPager2 mViewPager2;
@@ -34,6 +39,8 @@ public class Banner<T> extends FrameLayout  {
     boolean autoPlay=false;
 
 
+    IndicatorView mIndicatorView;
+
 
     public Banner(@NonNull Context context) {
         this(context,null);
@@ -47,6 +54,7 @@ public class Banner<T> extends FrameLayout  {
         super(context, attrs, defStyleAttr);
 
         mViewPager2=new ViewPager2(context);
+
 
 
     }
@@ -82,8 +90,6 @@ public class Banner<T> extends FrameLayout  {
                     mBannerAdapter.setItem(holder.itemView,mList.get(position-1));
                 }
 
-
-
             }
 
             @Override
@@ -110,6 +116,13 @@ public class Banner<T> extends FrameLayout  {
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
                 nowPosition=position;
+                if(nowPosition==0){
+                    mIndicatorView.setNowPosition(mList.size()-1);
+                }else if (nowPosition==mList.size()+1){
+                    mIndicatorView.setNowPosition(0);
+                }else {
+                    mIndicatorView.setNowPosition(nowPosition-1);
+                }
             }
 
             @Override
@@ -119,18 +132,36 @@ public class Banner<T> extends FrameLayout  {
                 if(state==ViewPager2.SCROLL_STATE_IDLE){
                     if(nowPosition==0){
                         mViewPager2.setCurrentItem(mList.size(),false);
+                        mIndicatorView.setNowPosition(mList.size()-1);
                     }else if (nowPosition==mList.size()+1){
                         mViewPager2.setCurrentItem(1,false);
+                        mIndicatorView.setNowPosition(mList.size()-1);
                     }
                 }
 
             }
         });
 
+        mIndicatorView=new IndicatorView(getContext(),mList.size());
+
+        FrameLayout.LayoutParams indicatorParams=new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        indicatorParams.gravity= 81;
+
+
+        indicatorParams.bottomMargin= DisplayUtil.dp2Px(10);
+
+        addView(mIndicatorView,indicatorParams);
+
         mViewPager2.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
         mViewPager2.setCurrentItem(nowPosition,false);
 
+
     }
+
+    RecyclerView indicatorList;
+
+
 
     int nowPosition=1;
 
@@ -155,4 +186,7 @@ public class Banner<T> extends FrameLayout  {
         this.mBannerAdapter=adapter;
     }
 
+    public ViewPager2 getViewPager2() {
+        return mViewPager2;
+    }
 }

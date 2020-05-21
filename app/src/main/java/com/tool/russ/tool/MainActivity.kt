@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tool.russ.view.ToolView
+import com.tool.russ.view.custom.EditClearText
 import com.tool.russ.view.custom.ProgressNumber
 import com.tool.russ.view.custom.banner.Banner
 import com.tool.russ.view.custom.banner.BannerAdapter
@@ -56,6 +58,11 @@ class MainActivity : AppCompatActivity() {
         list.add(R.drawable.pic)
         list.add(R.drawable.auction6_1)
         list.add(R.drawable.auction6_2)
+
+        val test=findViewById<EditClearText>(R.id.test);
+        val layoutParams=test.layoutParams as FrameLayout.LayoutParams
+
+        Log.d("test", layoutParams.gravity.toString())
 
 
 
