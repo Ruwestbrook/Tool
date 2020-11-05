@@ -12,6 +12,7 @@ class ToastUtil {
         var toast:Toast?=null
         var toastTime=System.currentTimeMillis()
 
+        @JvmStatic
         private fun toast(msg:String?){
             if(msg==null){
                 return
@@ -21,7 +22,7 @@ class ToastUtil {
                 toast?.cancel()
             }
 
-            val nowToast=Toast.makeText(ToolView.context,msg,Toast.LENGTH_LONG)
+            val nowToast=Toast.makeText(ToolView.context,msg,Toast.LENGTH_SHORT)
 
             nowToast.show()
 
@@ -30,6 +31,7 @@ class ToastUtil {
             toastTime=now
         }
 
+        @JvmStatic
         fun toast(resId:Int){
             toast(ToolView.context.getString(resId))
         }

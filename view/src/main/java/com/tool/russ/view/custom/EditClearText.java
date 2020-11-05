@@ -12,6 +12,7 @@ import android.view.MotionEvent;
 import androidx.core.content.ContextCompat;
 
 import com.tool.russ.view.R;
+import com.tool.russ.view.Tools.DisplayUtil;
 
 /**
  * author: russell
@@ -38,16 +39,19 @@ public class EditClearText extends androidx.appcompat.widget.AppCompatEditText {
 
         drawable= ContextCompat.getDrawable(context,resId);
 
+        closeSize= DisplayUtil.dp2Px(20);
+
         array.recycle();
     }
 
     private static final String TAG = "EditClearText";
 
-
     private Drawable drawable;
     private boolean isMeasure=false;
     int drawableLeft;
     int drawablePadding;
+
+    int closeSize;
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {

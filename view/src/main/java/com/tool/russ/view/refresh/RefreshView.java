@@ -7,8 +7,11 @@ import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import androidx.annotation.Nullable;
+import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +22,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -27,7 +31,7 @@ import com.tool.russ.view.R;
 
 
 @SuppressWarnings("unused")
-public class RefreshView extends LinearLayout implements View.OnTouchListener {
+public class RefreshView extends ViewGroup implements View.OnTouchListener {
     private static final String TAG = "RefreshView";
     //正常状态
     private static final int STATUS_NORMAL=0;
@@ -45,6 +49,7 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
 
     //刷新头部
     private View headView;
+
     private View footerView;
 
 
@@ -69,11 +74,11 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
 
     //刷新事件
     private RefreshEvent mRefreshEvent;
-    private RecyclerView mRecyclerView;
+    private View targetView;
     //刷新头部的LayoutParams
-    LinearLayout.LayoutParams pullLayoutParams;
+    RefreshView.LayoutParams pullLayoutParams;
     //加载更多尾部的LayoutParams
-    LinearLayout.LayoutParams loadLayoutParams;
+    RefreshView.LayoutParams loadLayoutParams;
     public RefreshView(Context context) {
         this(context,null);
     }
@@ -84,17 +89,40 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
         this(context, attrs,0);
     }
 
-    @SuppressLint("HandlerLeak")
-    public RefreshView(final Context context, @Nullable AttributeSet attrs, int defStyle) {
+    public RefreshView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mContext=context;
-        setOrientation(LinearLayout.VERTICAL);
         setLongClickable(true);
+        initView(context);
+
+
+
+    }
+
+    private void initView(Context context) {
         headView=LayoutInflater.from(context).inflate(R.layout.refresh_title,this,false);
+
+
+        if(headView.getParent() != null) {
+            ((ViewGroup)headView.getParent()).removeView(headView); // <- fix
+        }
+
+        headHeight=headView.getMeasuredHeight();
+        pullLayoutParams=new RefreshView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        headView.setLayoutParams(pullLayoutParams);
+
+
+        Log.d(TAG, "initView:headHeight= "+headHeight);
+
+        addView(headView);
+
+
+
         pullTextView=headView.findViewById(R.id.text);
         pullImageView=headView.findViewById(R.id.image);
         pullImageView.setImageDrawable(context.getResources().getDrawable(R.drawable.load));
-        addView(headView,0);
+
+
         touchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         mRefreshEvent=new RefreshEvent() {
             @Override
@@ -158,20 +186,28 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
             }
         };
 
-
-
-        //设置footerView
-        footerView=LayoutInflater.from(context).inflate(R.layout.refresh_title,this,false);
-
-
-
+//        //设置尾部
+//        footerHeight=footerView.getMeasuredHeight();
+//        Log.d(TAG, "onLayout: footerHeight="+footerHeight);
+//
+//        loadLayoutParams= (LayoutParams) footerView.getLayoutParams();
+//        if(loadLayoutParams==null){
+//            loadLayoutParams=new RefreshView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+//                    ViewGroup.LayoutParams.WRAP_CONTENT);
+//        }
+//
+//        loadLayoutParams.topMargin=getMeasuredHeight()-footerHeight;
+//        Log.d(TAG, "onLayout: loadLayoutParams.topMargin="+(getMeasuredHeight()-footerHeight));
+//        footerView.setLayoutParams(loadLayoutParams);
+//        addView(footerView);
 
 
 
     }
+
     @SuppressWarnings("unused")
-    public  void setRefreshing(boolean refreshing){
-        if(!refreshing && currentStatus==STATUS_REFRESH){
+    public  void finishRefresh(){
+        if(currentStatus==STATUS_REFRESH){
             new HideHeader().start();
         }
     }
@@ -186,46 +222,65 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
 
     @SuppressWarnings("unused")
     public void setHeadView(View headView) {
-        this.headView = headView;
-       this.removeViewAt(0);
-       addView(headView,0);
+        this.removeView(headView);
+        this.headView=headView;
         isFirst=false;
         otherHead=true;
+        addView(headView);
     }
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        super.onLayout(changed, l, t, r, b);
-        if(changed && !isFirst){
-            isFirst=true;
-            headHeight=headView.getMeasuredHeight();
-            pullLayoutParams= (LayoutParams) headView.getLayoutParams();
-            if(pullLayoutParams==null){
-                pullLayoutParams=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        for (int i = 0; i < getChildCount(); i++) {
+            View view=getChildAt(i);
+            if(view == headView){
+
+                Log.d(TAG, "onLayout: pullLayoutParams.topMargin="+(pullLayoutParams.topMargin));
+                Log.d(TAG, "onLayout: pullLayoutParams.width="+(pullLayoutParams.width));
+                Log.d(TAG, "onLayout: pullLayoutParams.height="+(pullLayoutParams.height));
+                view.layout(0,pullLayoutParams.topMargin,headView.getMeasuredWidth(),pullLayoutParams.topMargin+headView.getMeasuredHeight());
+
+            }else if(view==footerView){
+
+            }else {
+                //targetView;
+                targetView=view;
+                targetView.setOnTouchListener(this);
+                int top=pullLayoutParams.topMargin+pullLayoutParams.height;
+                if(top<0) top=0;
+                view.layout(0,top,view.getMeasuredWidth(),top+view.getMeasuredHeight());
+
             }
-            pullLayoutParams.topMargin=-headHeight;
-            headView.setLayoutParams(pullLayoutParams);
-            mRecyclerView= (RecyclerView) getChildAt(1);
-            mRecyclerView.setOnTouchListener(this);
-
-            //设置尾部
-            footerHeight=footerView.getMeasuredHeight();
-            Log.d(TAG, "onLayout: footerHeight="+footerHeight);
-            loadLayoutParams= (LayoutParams) footerView.getLayoutParams();
-            if(loadLayoutParams==null){
-                loadLayoutParams=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT);
-            }
-
-            loadLayoutParams.topMargin=getMeasuredHeight()-footerHeight;
-            Log.d(TAG, "onLayout: loadLayoutParams.topMargin="+(getMeasuredHeight()-footerHeight));
-            footerView.setLayoutParams(loadLayoutParams);
-            addView(footerView,2);
-
-
-
         }
 
+    }
+
+    private boolean measureHeight=false;
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+
+        for (int i = 0; i < getChildCount(); i++) {
+            View child = getChildAt(i);
+            measureChild(child, widthMeasureSpec, heightMeasureSpec);
+            if(child==headView && !measureHeight){
+
+                measureHeight=true;
+                headHeight=headView.getMeasuredHeight();
+                Log.d(TAG, "onMeasure: headHeight="+headHeight);
+
+                Log.d(TAG, "onMeasure: headView.getMeasuredWidth()="+headView.getMeasuredWidth());
+
+                pullLayoutParams=new RefreshView.LayoutParams(headView.getMeasuredWidth(),headView.getMeasuredHeight());
+
+                pullLayoutParams.topMargin=-headHeight;
+
+                headView.setLayoutParams(pullLayoutParams);
+
+            }
+        }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     private float downY=0;
@@ -240,11 +295,14 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
             switch (motionEvent.getAction()){
                 //抬起
                 case MotionEvent.ACTION_UP:
+                    Log.d(TAG, "onTouch: ACTION_UP");
                     if(currentStatus==STATUS_CAN_REFRESH){
                         //刷新 调用刷新方法
+                        Log.d(TAG, "onTouch: 调用刷新方法");
                         mRefreshEvent.startRefresh();
                     }else if(currentStatus==STATUS_PULL){
                         //无法刷新 但是要隐藏刷新头部
+                        Log.d(TAG, "onTouch: 无法刷新");
                         downY=0;
                         pullLayoutParams.topMargin=-headHeight;
                         headView.setLayoutParams(pullLayoutParams);
@@ -262,6 +320,9 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
                     if (distance < touchSlop) {
                         return false;
                     }
+
+
+
                         if(distance>=headHeight && currentStatus!=STATUS_CAN_REFRESH){
                             currentStatus=STATUS_CAN_REFRESH;
                             mRefreshEvent.canRefresh();
@@ -279,30 +340,49 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
         return false;
     }
 
+    /*
+      20200524 修改: 判断是否能滑动的方法更新
+     */
     private void canRefresh(MotionEvent motionEvent) {
-        if(mRecyclerView!=null){
-           LinearLayoutManager layoutManager= (LinearLayoutManager) mRecyclerView.getLayoutManager();
-            View view=mRecyclerView.getChildAt(0);
-            if(view!=null){
-                if(view.getTop()==0 && layoutManager.findFirstVisibleItemPosition()==0){
-                    if(!canPull){
-                        downY=motionEvent.getRawY();
-                    }
-                    canPull=true;
-                }else {
-                    if(pullLayoutParams.topMargin!=-headHeight){
-                        pullLayoutParams.topMargin=-headHeight;
-                            headView.setLayoutParams(pullLayoutParams);
-                        }
-                        canPull=false;
-                }
-            }else {
-                canPull=true;
+
+        //正数表示检查向下滚动 即如果在最顶部 那么这么值为true 可以向下滚动 手指操作是向上
+
+        if(!targetView.canScrollVertically(-1)){
+            if(!canPull){
+                downY=motionEvent.getRawY();
             }
+            canPull=true;
+        }else {
+            if(pullLayoutParams.topMargin!=-headHeight){
+                pullLayoutParams.topMargin=-headHeight;
+                headView.setLayoutParams(pullLayoutParams);
+            }
+            canPull=false;
         }
+        Log.d(TAG, "canRefresh: canPull="+canPull);
 
     }
 
+
+
+    public static class LayoutParams extends ViewGroup.MarginLayoutParams {
+
+        public LayoutParams(Context c, AttributeSet attrs) {
+            super(c, attrs);
+        }
+
+        public LayoutParams(int width, int height) {
+            super(width, height);
+        }
+
+        public LayoutParams(MarginLayoutParams source) {
+            super(source);
+        }
+
+        public LayoutParams(ViewGroup.LayoutParams source) {
+            super(source);
+        }
+    }
 
 
 
@@ -311,26 +391,6 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
         是否能加载更多
      */
     private void canLoadMore(MotionEvent motionEvent) {
-        if(mRecyclerView!=null){
-            LinearLayoutManager layoutManager= (LinearLayoutManager) mRecyclerView.getLayoutManager();
-            View view=mRecyclerView.getChildAt(layoutManager.getChildCount()-1);
-            if(view!=null){
-                if(view.getBottom()==0 && layoutManager.findLastCompletelyVisibleItemPosition()==(layoutManager.getChildCount()-1)){
-                    if(!canPull){
-                        downY=motionEvent.getRawY();
-                    }
-                    canPull=true;
-                }else {
-                    if(pullLayoutParams.topMargin!=-headHeight){
-                        pullLayoutParams.topMargin=-headHeight;
-                        headView.setLayoutParams(pullLayoutParams);
-                    }
-                    canPull=false;
-                }
-            }else {
-                canPull=true;
-            }
-        }
 
     }
 
@@ -359,6 +419,15 @@ public class RefreshView extends LinearLayout implements View.OnTouchListener {
         }
 
 
+    }
+
+
+    protected boolean canChildScrollUp(View mTargetView) {
+        return mTargetView.canScrollVertically( -1);
+    }
+
+    protected boolean canChildScrollDown(View mTargetView) {
+        return mTargetView.canScrollVertically( 1);
     }
 
 

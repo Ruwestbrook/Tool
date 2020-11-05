@@ -24,9 +24,33 @@ class IndicatorView extends View {
 
     int spacing;
 
-    int indicatorWidth=0;
+    int indicatorSize=0;
 
-    int indicatorHeight=0;
+    public void setIndicatorSize(int indicatorSize) {
+        this.indicatorSize = indicatorSize;
+
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    int type=0;
+
+    public void setSpacing(int spacing) {
+        this.spacing = spacing;
+    }
+
+
+
+    public void setNormalColor(int normalColor) {
+        this.normalColor = normalColor;
+    }
+
+    public void setChooseColor(int chooseColor) {
+        this.chooseColor = chooseColor;
+    }
+
 
     int normalColor;
 
@@ -34,19 +58,17 @@ class IndicatorView extends View {
 
     Paint mPaint;
 
+    public  IndicatorView(Context context){
+        super(context);
+    }
 
     public IndicatorView(Context context,int size) {
         super(context);
         this.size = size;
         spacing= DisplayUtil.dp2Px(4);
-        indicatorWidth=DisplayUtil.dp2Px(6);
-        indicatorHeight=DisplayUtil.dp2Px(6);
-
-        normalColor= Color.RED;
-
-
-        chooseColor=Color.BLUE;
-
+        normalColor=Color.WHITE;
+        chooseColor=Color.RED;
+        indicatorSize=DisplayUtil.dp2Px(6);
         mPaint=new Paint();
     }
 
@@ -54,8 +76,8 @@ class IndicatorView extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         //super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        int width=indicatorWidth*size+spacing*(size-1);
-        setMeasuredDimension(width,indicatorHeight);
+        int width=indicatorSize*size+spacing*(size-1);
+        setMeasuredDimension(width,indicatorSize);
     }
 
     @Override
@@ -63,14 +85,18 @@ class IndicatorView extends View {
         //super.onDraw(canvas);
 
         for (int i = 0; i < size; i++) {
-            int width=(spacing+indicatorWidth)*i;
+            int width=(spacing+indicatorSize)*i;
             if(i==nowPosition){
                 mPaint.setColor(chooseColor);
             }else {
                 mPaint.setColor(normalColor);
             }
+            if(type==0){
+                canvas.drawCircle((float) (width+indicatorSize/2), indicatorSize >> 1, indicatorSize >> 1,mPaint);
+            }else {
+                canvas.drawRect(width,0,width+indicatorSize,indicatorSize,mPaint);
+            }
 
-            canvas.drawCircle((float) (width+indicatorWidth/2), indicatorWidth >> 1, indicatorHeight >> 1,mPaint);
 
         }
 
@@ -79,6 +105,7 @@ class IndicatorView extends View {
 
     public void setSize(int size) {
         this.size = size;
+        invalidate();
     }
 
 

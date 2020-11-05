@@ -80,13 +80,12 @@ class ProgressNumber(context: Context, attributes: AttributeSet?, defStyleAttr: 
         setMeasuredDimension(progressWidth,progressHeight)
     }
 
-    @SuppressLint("DrawAllocation")
+
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 
         val text= "$progress%"
 
-        rect = Rect()
 
         paint?.getTextBounds(text, 0,text.length, rect)
 

@@ -8,8 +8,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -17,12 +15,14 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tool.russ.view.ToolView
-import com.tool.russ.view.custom.EditClearText
+import com.tool.russ.view.custom.BarChartView
 import com.tool.russ.view.custom.ProgressNumber
-import com.tool.russ.view.custom.banner.Banner
-import com.tool.russ.view.custom.banner.BannerAdapter
 import com.tool.russ.view.dialog.TipDialog
+import com.tool.russ.view.refresh.RefreshListener
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.item.view.*
+import kotlinx.android.synthetic.main.item.view.text
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -52,71 +52,91 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         ToolView.init(this)
         setContentView(R.layout.activity_main)
-
-        val list:MutableList<Int> =ArrayList<Int>()
-
-        list.add(R.drawable.pic)
-        list.add(R.drawable.auction6_1)
-        list.add(R.drawable.auction6_2)
-
-        val test=findViewById<EditClearText>(R.id.test);
-        val layoutParams=test.layoutParams as FrameLayout.LayoutParams
-
-        Log.d("test", layoutParams.gravity.toString())
-
-
-
-        @Suppress("UNCHECKED_CAST")
-        val mBanner=banner as Banner<Int>;
+//
+//        val list:MutableList<Int> =ArrayList<Int>()
+//
+//        list.add(R.drawable.pic)
+//        list.add(R.drawable.auction6_1)
+//        list.add(R.drawable.auction6_2)
+//
+//        val test=findViewById<EditClearText>(R.id.test);
+//        val layoutParams=test.layoutParams as FrameLayout.LayoutParams
+//
+//        Log.d("test", layoutParams.gravity.toString())
 
 
 
-        mBanner.setBannerAdapter(object :BannerAdapter<Int>(){
+//        @Suppress("UNCHECKED_CAST")
+//        val mBanner=banner as Banner<Int>;
+//
+//
+//
+//        mBanner.setBannerAdapter(object :BannerAdapter<Int>(){
+//
+//            override fun getItemView(parent: ViewGroup, viewType: Int): View {
+//                return ImageView(parent.context)
+//            }
+//
+//
+//            override fun setItem(view: View?, item: Int) {
+//                 if(view!=null){
+//                     view as ImageView
+//                     view.setImageDrawable(ContextCompat.getDrawable(view.context,item))
+//                 }
+//
+//            }
+//
+//        })
+//
+//        mBanner.setList(list)
+//
+//        mBanner.start()
 
-            override fun getItemView(parent: ViewGroup, viewType: Int): View {
-                return ImageView(parent.context)
+//        val array = Array(12){ i->"$i"}
+//        bar.setDate(floatArrayOf(24f,45f,55f,180f,65f,44f,78f,96f,18f,108f,136f,54f),array)
+//
+
+
+
+//
+        list.adapter=object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+                val view = LayoutInflater.from(parent.context).inflate(R.layout.item, parent, false)
+                return object : RecyclerView.ViewHolder(view) {}
             }
 
+            override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 
-            override fun setItem(view: View?, item: Int) {
-                 if(view!=null){
-                     view as ImageView
-                     view.setImageDrawable(ContextCompat.getDrawable(view.context,item))
-                 }
+                holder.itemView.text.text="第${position}个content"
 
             }
 
-        })
-
-        mBanner.setList(list)
-
-        mBanner.start()
-
+            override fun getItemCount(): Int {
+                return 20
+            }
+        }
 
 
+        val layoutManager=GridLayoutManager(this,3);
+        list.addItemDecoration(DemoItemDecoration())
+        //layoutManager.orientation=LinearLayoutManager.HORIZONTAL
+        list.layoutManager=layoutManager
 
-
-
-
-//        list.adapter=object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-//            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-//                val view = LayoutInflater.from(parent.context).inflate(R.layout.item, parent, false)
-//                return object : RecyclerView.ViewHolder(view) {}
+//        list.addOnScrollListener(object: RecyclerView.OnScrollListener(){
+//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+//                super.onScrolled(recyclerView, dx, dy)
 //            }
 //
-//            override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+//            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+//                super.onScrollStateChanged(recyclerView, newState)
 //
-//                holder.itemView.post { Runnable {
-//                    Log.d(TAG,"第${holder.adapterPosition}个，width=${holder.itemView.width},height=${holder.itemView.height}")
-//                }.run() }
 //
+//
+//                Log.d(TAG,"滑动情况-1"+recyclerView.canScrollVertically(-1))
+//                Log.d(TAG,"滑动情况1"+recyclerView.canScrollVertically(1))
 //
 //            }
-//
-//            override fun getItemCount(): Int {
-//                return 20
-//            }
-//        }
+//        })
 //
 //        list.layoutManager = GridLayoutManager(this,2)
 //
@@ -131,14 +151,16 @@ class MainActivity : AppCompatActivity() {
 //
 //        decoration1.setDrawable(ContextCompat.getDrawable(this,R.drawable.divider)!!)
 //        list.addItemDecoration(decoration1)
-
-//        refresh.setListener(object:RefreshListener(){
-//            override fun refresh() {
-//                handler.sendEmptyMessageDelayed(2,3000)
 //
+//
+//        refresh.setOnRefreshListener(object : RefreshListener() {
+//            override fun refresh() {
+//                handler.sendEmptyMessageAtTime(2,2500)
 //            }
 //
 //        })
+
+
 
     }
 

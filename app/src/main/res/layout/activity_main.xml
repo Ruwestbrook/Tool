@@ -10,15 +10,15 @@
     tools:context=".MainActivity">
 
 
-        <com.tool.russ.view.custom.EditClearText
-            android:layout_width="200dp"
-            android:id="@+id/test"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:maxLines="1"
-            android:layout_gravity="center|bottom"
-            android:layout_marginTop="20dp"
-            android:layout_height="40dp"/>
+<!--        <com.tool.russ.view.custom.EditClearText-->
+<!--            android:layout_width="200dp"-->
+<!--            android:id="@+id/test"-->
+<!--            android:layout_marginLeft="15dp"-->
+<!--            android:layout_marginRight="15dp"-->
+<!--            android:maxLines="1"-->
+<!--            android:layout_gravity="center|bottom"-->
+<!--            android:layout_marginTop="20dp"-->
+<!--            android:layout_height="40dp"/>-->
 
 <!--    <com.tool.russ.view.custom.AutoSizeView-->
 <!--        android:layout_gravity="center"-->
@@ -69,23 +69,28 @@
         <!--tools:ignore="HardcodedText" />-->
 
 
-<!--    <com.tool.russ.view.refresh.RefreshLayout-->
+<!--    <com.tool.russ.view.refresh.RefreshView-->
 <!--        android:layout_width="match_parent"-->
 <!--        android:id="@+id/refresh"-->
 <!--        android:layout_height="match_parent">-->
 
-<!--        <androidx.recyclerview.widget.RecyclerView-->
-<!--            android:id="@+id/list"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"/>-->
-
-<!--    </com.tool.russ.view.refresh.RefreshLayout>-->
-
-
-        <com.tool.russ.view.custom.banner.Banner
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/list"
             android:layout_width="match_parent"
-            android:id="@+id/banner"
-            android:layout_height="200dp"/>
+            android:layout_height="match_parent"/>
+
+<!--    </com.tool.russ.view.refresh.RefreshView>-->
+
+<!--    <com.tool.russ.view.custom.BarChartView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_gravity="center"-->
+<!--        android:id="@+id/bar"-->
+<!--        android:layout_height="200dp"/>-->
+
+<!--        <com.tool.russ.view.custom.banner.Banner-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:id="@+id/banner"-->
+<!--            android:layout_height="200dp"/>-->
 
 
 </FrameLayout>

@@ -1,6 +1,8 @@
 package com.tool.russ.view.custom.banner;
 
 import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -13,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.tool.russ.view.R;
 import com.tool.russ.view.Tools.DisplayUtil;
 
 import java.util.List;
@@ -55,6 +58,28 @@ public class Banner<T> extends FrameLayout  {
 
         mViewPager2=new ViewPager2(context);
 
+        initView(context,attrs);
+
+
+    }
+
+    private void initView(Context context, AttributeSet attrs) {
+
+        TypedArray array=context.obtainStyledAttributes(attrs, R.styleable.Banner);
+
+        //设置Indicator属性
+        int normalColor=array.getColor(R.styleable.Banner_indicator_normal_color, Color.WHITE);
+        int chooseColor=array.getColor(R.styleable.Banner_indicator_choose_color,Color.RED);
+        int type=array.getInt(R.styleable.Banner_indicator_type,0);
+        int spacing= (int) array.getDimension(R.styleable.Banner_spacing,DisplayUtil.dp2Px(4));
+        int size= (int) array.getDimension(R.styleable.Banner_indicator_size,DisplayUtil.dp2Px(8));
+        mIndicatorView=new IndicatorView(context);
+        mIndicatorView.setChooseColor(chooseColor);
+        mIndicatorView.setNormalColor(normalColor);
+        mIndicatorView.setType(type);
+        mIndicatorView.setSpacing(spacing);
+        mIndicatorView.setIndicatorSize(size);
+        array.recycle();
 
 
     }
@@ -142,7 +167,7 @@ public class Banner<T> extends FrameLayout  {
             }
         });
 
-        mIndicatorView=new IndicatorView(getContext(),mList.size());
+        mIndicatorView.setSize(mList.size());
 
         FrameLayout.LayoutParams indicatorParams=new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
@@ -159,7 +184,7 @@ public class Banner<T> extends FrameLayout  {
 
     }
 
-    RecyclerView indicatorList;
+
 
 
 
