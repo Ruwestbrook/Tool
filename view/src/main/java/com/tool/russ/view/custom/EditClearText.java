@@ -3,8 +3,12 @@ package com.tool.russ.view.custom;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.text.InputType;
 import android.util.AttributeSet;
@@ -14,6 +18,7 @@ import android.view.MotionEvent;
 import androidx.core.content.ContextCompat;
 
 import com.tool.russ.view.R;
+import com.tool.russ.view.Tools.BitmapUtil;
 import com.tool.russ.view.Tools.DisplayUtil;
 
 /**
@@ -35,9 +40,7 @@ public class EditClearText extends androidx.appcompat.widget.AppCompatEditText {
         super(context, attrs, defStyleAttr);
         TypedArray array=context.obtainStyledAttributes(attrs,R.styleable.EditClearText);
 
-
         int resId=array.getResourceId(R.styleable.EditClearText_drawable,R.drawable.ic_clear);
-
 
         ClearDrawable= ContextCompat.getDrawable(context,resId);
         hideDrawable=ContextCompat.getDrawable(context,R.drawable.ic_edit_hide);
@@ -47,6 +50,7 @@ public class EditClearText extends androidx.appcompat.widget.AppCompatEditText {
         setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         array.recycle();
         mPaint=new Paint();
+        setBackgroundDrawable(null);
         mPaint.setTextSize(getTextSize());
     }
 
@@ -77,33 +81,7 @@ public class EditClearText extends androidx.appcompat.widget.AppCompatEditText {
 
     @Override
     protected void onDraw(Canvas canvas) {
-
-        canvas.save();
-        /*
-         * 需要注意的是当文字内容有多行是，View的高度不变，但是会增加scrollY,所以绘制删除键位置时，需要考虑scrollY的值
-         */
-        int textWidth=drawableLeft;
-        int drawableTop = (getMeasuredHeight() +getScrollY()- drawablePadding-size);
-        canvas.translate(drawableLeft,drawableTop);
-        Drawable drawable;
-        if(passwordType){
-            drawable=showDrawable;
-        }else {
-            drawable=hideDrawable;
-        }
-        drawable.setBounds(0,0, size,size);
-
-        drawable.draw(canvas);
-
-        if(!getText().toString().equals("")){
-
-            canvas.translate(-size-15,0);
-            ClearDrawable.setBounds(0,0, size,size);
-            ClearDrawable.draw(canvas);
-            textWidth+=size+15;
-        }
-
-        canvas.restore();
+        setCompoundDrawablesRelativeWithIntrinsicBounds(null,null,getDrawable(),null);
         super.onDraw(canvas);
 
     }
@@ -140,4 +118,31 @@ public class EditClearText extends androidx.appcompat.widget.AppCompatEditText {
         }
         return super.onTouchEvent(event);
     }
+
+
+    private Drawable getDrawable(){
+        ClearDrawable.setBounds(0,0,size,size);
+        Bitmap clear= BitmapUtil.scaleBitmap(BitmapUtil.drawableToBitmap(ClearDrawable),size,size);
+        Bitmap bitmap=Bitmap.createBitmap(size*2+25,size, Bitmap.Config.ARGB_8888);
+        Canvas canvas=new Canvas(bitmap);
+        Rect src=new Rect(0,0,size,size);
+        Rect dst=new Rect(10,0,size+10,size);
+        if(!getText().toString().equals("")){
+            canvas.drawBitmap(clear,src,dst,mPaint);
+        }
+        Bitmap show;
+        if(passwordType){
+            show=BitmapUtil.scaleBitmap(BitmapUtil.drawableToBitmap(showDrawable),size,size);
+        }else {
+            show=BitmapUtil.scaleBitmap(BitmapUtil.drawableToBitmap(hideDrawable),size,size);
+        }
+        Rect dst2=new Rect(size+25,0,size*2+25,size);
+        canvas.drawBitmap(show,src,dst2,mPaint);
+        show.recycle();
+        clear.recycle();
+        return BitmapUtil.bitmapToDrawable(bitmap);
+    }
+
+
+
 }

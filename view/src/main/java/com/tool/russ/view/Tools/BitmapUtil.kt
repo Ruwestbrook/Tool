@@ -89,23 +89,22 @@ class BitmapUtil {
             return  bitmap
         }
 
-        /*
-         缩放bitmap(暂不确定：只能缩小)
-         //java.lang.IllegalArgumentException: x + width must be <= bitmap.width()
-         */
         @JvmStatic
-        fun zoomBitmap(bitmap: Bitmap,width:Int,height:Int): Bitmap? {
-            val w=bitmap.width
-
-            val h=bitmap.height
-
-            val matrix=Matrix()
-
-            val scaleWidth:Float=if(width>w) w.toFloat()/width.toFloat()  else width.toFloat()/w.toFloat()
-            val scaleHeight:Float=if(height>h) h.toFloat()/height.toFloat() else height.toFloat()/h.toFloat()
-            matrix.setScale(scaleWidth,scaleHeight)
-
-            return Bitmap.createBitmap(bitmap,0,0,width,height,matrix,true)
+        fun scaleBitmap(origin: Bitmap?, newWidth: Int, newHeight: Int): Bitmap? {
+            if (origin == null) {
+                return null
+            }
+            val height = origin.height
+            val width = origin.width
+            val scaleWidth = newWidth.toFloat() / width
+            val scaleHeight = newHeight.toFloat() / height
+            val matrix = Matrix()
+            matrix.postScale(scaleWidth, scaleHeight) // 使用后乘
+            val newBM = Bitmap.createBitmap(origin, 0, 0, width, height, matrix, false)
+            if (!origin.isRecycled) {
+                origin.recycle()
+            }
+            return newBM
         }
 
         /*
