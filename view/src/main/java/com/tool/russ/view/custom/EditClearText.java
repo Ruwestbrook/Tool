@@ -2,29 +2,41 @@ package com.tool.russ.view.custom;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.text.InputType;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 
 import com.tool.russ.view.R;
 import com.tool.russ.view.Tools.BitmapUtil;
 import com.tool.russ.view.Tools.DisplayUtil;
 
+import java.lang.reflect.Field;
+import java.nio.channels.Selector;
+
 /**
  * author: russell
  * time: 2019-07-23:09:57
  * describe：自定义的EditText 可以取消输入
+ * todo : 光标颜色用户自己设置,不在提供api
  */
 public class EditClearText extends androidx.appcompat.widget.AppCompatEditText {
     private int size;
@@ -40,39 +52,90 @@ public class EditClearText extends androidx.appcompat.widget.AppCompatEditText {
         super(context, attrs, defStyleAttr);
         TypedArray array=context.obtainStyledAttributes(attrs,R.styleable.EditClearText);
 
-        int resId=array.getResourceId(R.styleable.EditClearText_drawable,R.drawable.ic_clear);
 
-        ClearDrawable= ContextCompat.getDrawable(context,resId);
-        hideDrawable=ContextCompat.getDrawable(context,R.drawable.ic_edit_hide);
-        showDrawable=ContextCompat.getDrawable(context,R.drawable.ic_edit_show);
+        clearDrawable= ContextCompat.getDrawable(context,array.getResourceId(R.styleable.EditClearText_closeDrawable,R.drawable.icon_clear));
+        hideDrawable=ContextCompat.getDrawable(context,array.getResourceId(R.styleable.EditClearText_hideDrawable,R.drawable.icon_hide));
+        showDrawable=ContextCompat.getDrawable(context,array.getResourceId(R.styleable.EditClearText_showDrawable,R.drawable.icon_show));
 
-        closeSize= DisplayUtil.dp2Px(20);
         setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        array.recycle();
+
         mPaint=new Paint();
         setBackgroundDrawable(null);
         mPaint.setTextSize(getTextSize());
+
+        setCursorDrawableColor(this,Color.RED);
+
+         focusColor=array.getColor(R.styleable.EditClearText_focusColor,Color.parseColor("#BDC7D8"));
+         disFocusColor=array.getColor(R.styleable.EditClearText_disFocusColor,Color.parseColor("#728ea3"));
+
+        backgroundDrawable=new GradientDrawable();
+        backgroundDrawable.setCornerRadius(array.getDimension(R.styleable.EditClearText_strokeRadius,DisplayUtil.dp2Px(context,12)));
+        focusWidth= (int) array.getDimension(R.styleable.EditClearText_focusWidth,DisplayUtil.dp2Px(context,2));
+        backgroundDrawable.setStroke(focusWidth,disFocusColor);
+        setBackground(backgroundDrawable);
+        setPadding(10,0,10,0);
+
+        array.recycle();
+        setOnFocusChangeListener(new OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus){
+                    backgroundDrawable.setStroke(focusWidth,focusColor);
+                }else {
+                    backgroundDrawable.setStroke(focusWidth,disFocusColor);
+                }
+            }
+        });
+
+
     }
+
+    public  void setCursorDrawableColor(EditText editText, int color) {
+
+        GradientDrawable drawable=new GradientDrawable();
+        drawable.setColor(Color.BLUE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            Log.d(TAG, "setCursorDrawableColor: 直接设置");
+            setTextCursorDrawable(drawable);
+        }else {
+            Field f = null;
+            try {
+                f = TextView.class.getDeclaredField("mCursorDrawable");
+                f.setAccessible(true);
+                f.set(editText, drawable);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.d(TAG, "setCursorDrawableColor: "+e.getLocalizedMessage());
+            }
+
+        }
+    }
+
 
     private static final String TAG = "EditClearText";
 
-    private Drawable ClearDrawable;
-    private Drawable hideDrawable;
+    private final Drawable clearDrawable;
+    private final Drawable hideDrawable;
     private boolean passwordType=true;
-    private Drawable showDrawable;
+    private final Drawable showDrawable;
     private boolean isMeasure=false;
     int drawableLeft;
     int drawablePadding;
-    private Paint mPaint;
-    int closeSize;
+    private final Paint mPaint;
+    int focusColor;
+    int disFocusColor;
+    int focusWidth;
 
+
+    private final GradientDrawable backgroundDrawable;
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
         if(!isMeasure){
             int paddingRight=getPaddingRight();
-            size= (int) ((getMeasuredHeight()-getPaddingTop()-getPaddingBottom())*0.7);
+            size= (int) ((getMeasuredHeight()-getPaddingTop()-getPaddingBottom())*0.8);
             drawableLeft = getMeasuredWidth() - paddingRight - size;
             drawablePadding = (getMeasuredHeight() - size) / 2;
             isMeasure=true;
@@ -121,8 +184,8 @@ public class EditClearText extends androidx.appcompat.widget.AppCompatEditText {
 
 
     private Drawable getDrawable(){
-        ClearDrawable.setBounds(0,0,size,size);
-        Bitmap clear= BitmapUtil.scaleBitmap(BitmapUtil.drawableToBitmap(ClearDrawable),size,size);
+        clearDrawable.setBounds(0,0,size,size);
+        Bitmap clear= BitmapUtil.scaleBitmap(BitmapUtil.drawableToBitmap(clearDrawable),size,size);
         Bitmap bitmap=Bitmap.createBitmap(size*2+25,size, Bitmap.Config.ARGB_8888);
         Canvas canvas=new Canvas(bitmap);
         Rect src=new Rect(0,0,size,size);

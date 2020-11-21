@@ -71,8 +71,8 @@ public class Banner<T> extends FrameLayout  {
         int normalColor=array.getColor(R.styleable.Banner_indicator_normal_color, Color.WHITE);
         int chooseColor=array.getColor(R.styleable.Banner_indicator_choose_color,Color.RED);
         int type=array.getInt(R.styleable.Banner_indicator_type,0);
-        int spacing= (int) array.getDimension(R.styleable.Banner_spacing,DisplayUtil.dp2Px(4));
-        int size= (int) array.getDimension(R.styleable.Banner_indicator_size,DisplayUtil.dp2Px(8));
+        int spacing= (int) array.getDimension(R.styleable.Banner_spacing,DisplayUtil.dp2Px(context,4));
+        int size= (int) array.getDimension(R.styleable.Banner_indicator_size,DisplayUtil.dp2Px(context,8));
         mIndicatorView=new IndicatorView(context);
         mIndicatorView.setChooseColor(chooseColor);
         mIndicatorView.setNormalColor(normalColor);
@@ -174,7 +174,7 @@ public class Banner<T> extends FrameLayout  {
         indicatorParams.gravity= 81;
 
 
-        indicatorParams.bottomMargin= DisplayUtil.dp2Px(10);
+        indicatorParams.bottomMargin= DisplayUtil.dp2Px(getContext(),10);
 
         addView(mIndicatorView,indicatorParams);
 

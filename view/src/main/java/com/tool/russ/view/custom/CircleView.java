@@ -54,8 +54,6 @@ public class CircleView extends androidx.appcompat.widget.AppCompatImageView {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         width=getMeasuredWidth();
         height=getMeasuredHeight();
-        Log.d(TAG, "onMeasure: width="+width);
-        Log.d(TAG, "onMeasure: height="+height);
         if(type!=2){
             int x=Math.min(width,height);
             width=x;

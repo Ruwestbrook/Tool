@@ -65,10 +65,10 @@ class IndicatorView extends View {
     public IndicatorView(Context context,int size) {
         super(context);
         this.size = size;
-        spacing= DisplayUtil.dp2Px(4);
+        spacing= DisplayUtil.dp2Px(context,4);
         normalColor=Color.WHITE;
         chooseColor=Color.RED;
-        indicatorSize=DisplayUtil.dp2Px(6);
+        indicatorSize=DisplayUtil.dp2Px(context,6);
         mPaint=new Paint();
     }
 

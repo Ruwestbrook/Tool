@@ -14,6 +14,7 @@ class DrawableUtil{
 
     companion object{
 
+        @JvmStatic
         fun tintDrawable(drawable: Drawable, color: Int): Drawable? {
             val wrappedDrawable: Drawable = DrawableCompat.wrap(drawable)
             DrawableCompat.setTint(wrappedDrawable, color)

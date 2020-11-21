@@ -6,13 +6,18 @@ import android.content.ContextWrapper;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import androidx.core.content.ContextCompat;
+
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tool.russ.view.R;
+import com.tool.russ.view.Tools.DisplayUtil;
+import com.tool.russ.view.Tools.DrawableUtil;
 
 
 public class HeaderView extends RelativeLayout {
@@ -33,24 +38,30 @@ public class HeaderView extends RelativeLayout {
     int lineHeight;
     boolean hasLine;
     int lineColor;
+    int backColor;
 
     public HeaderView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         TypedArray array=context.obtainStyledAttributes(attrs,R.styleable.HeaderView);
         title=array.getString(R.styleable.HeaderView_title);
-        textSize=array.getInteger(R.styleable.HeaderView_title_size,18);
-        backSize= (int) array.getDimension(R.styleable.HeaderView_back_size,30);
-        backMargin= (int) array.getDimension(R.styleable.HeaderView_back_margin,15);
+
+        textSize= DisplayUtil.px2Sp(context,(int) array.getDimension(R.styleable.HeaderView_title_size,DisplayUtil.sp2Px(context,16)));
+
+        backSize= DisplayUtil.px2Dp(context,(int) array.getDimension(R.styleable.HeaderView_back_size,DisplayUtil.dp2Px(context,30)));
+        backMargin= DisplayUtil.px2Dp(context,(int) array.getDimension(R.styleable.HeaderView_back_margin,DisplayUtil.dp2Px(context,15)));
+
         textColor=array.getColor(R.styleable.HeaderView_text_color, Color.parseColor("#333333"));
+        backColor=array.getColor(R.styleable.HeaderView_back_color, 0);
         lineColor=array.getColor(R.styleable.HeaderView_line_color, Color.parseColor("#ebebeb"));
         hasLine=array.getBoolean(R.styleable.HeaderView_has_line,false);
-        lineHeight= (int) array.getDimension(R.styleable.HeaderView_line_height,2);
+        lineHeight= (int) array.getDimension(R.styleable.HeaderView_line_height, 1);
 
         array.recycle();
         initTitle();
     }
 
+    private static final String TAG = "HeaderView";
     private void initTitle() {
 
         LayoutParams textLayoutParams=new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
@@ -74,18 +85,16 @@ public class HeaderView extends RelativeLayout {
         imageLayoutParams.addRule(ALIGN_PARENT_LEFT);
 
         ImageView imageView=new ImageView(getContext());
-        imageView.setImageDrawable(ContextCompat.getDrawable(getContext(),R.drawable.ic_arrow5));
+        Drawable drawable=ContextCompat.getDrawable(getContext(),R.drawable.ic_back);
+        if(backColor!=0){
+            drawable= DrawableUtil.tintDrawable(drawable,backColor);
+        }
+        imageView.setImageDrawable(drawable);
 
 
         addView(imageView,imageLayoutParams);
 
-        imageView.setOnClickListener(new OnClickListener(){
-
-            @Override
-            public void onClick(View v) {
-                getActivity().finish();
-            }
-        });
+        imageView.setOnClickListener(v -> getActivity().finish());
 
 
         if(hasLine){
