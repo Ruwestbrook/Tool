@@ -75,8 +75,6 @@ public class BottomNavigationBar extends LinearLayout implements View.OnClickLis
         setOrientation(HORIZONTAL);
         items=new ArrayList<>();
 
-
-
        float scale=context.getResources().getDisplayMetrics().scaledDensity;
 
        float density=context.getResources().getDisplayMetrics().density;
@@ -102,9 +100,6 @@ public class BottomNavigationBar extends LinearLayout implements View.OnClickLis
         textSize= (int) ((int) (textSize/density+0.5)*scale);
 
         array.recycle();
-
-
-
 
     }
 
@@ -206,20 +201,25 @@ public class BottomNavigationBar extends LinearLayout implements View.OnClickLis
     }
 
     private static final String TAG = "BottomNavigationBar";
+    int lastItem=0;
 
     @Override
     public void onClick(View v) {
+        chooseItem= (int) v.getTag();
+        setCurrentPage(chooseItem);
+    }
 
 
-        int lastItem=chooseItem;
+    public void setNavigationListener(NavigationListener navigationListener) {
+        this.navigationListener = navigationListener;
+    }
+
+
+
+    public void setCurrentPage(int chooseItem) {
         Fragment lastFragment=null;
 
         Fragment nowFragment=null;
-
-        chooseItem= (int) v.getTag();
-
-
-        Log.d(TAG, "onClick: chooseItem="+chooseItem);
 
 
         for (int j = 0; j < items.size(); j++) {
@@ -252,15 +252,11 @@ public class BottomNavigationBar extends LinearLayout implements View.OnClickLis
         if(navigationListener!=null){
             navigationListener.onPageChange(chooseItem,nowFragment,lastItem,lastFragment);
         }
-
+        lastItem=chooseItem;
         FragmentManager fragmentManager=activity.getSupportFragmentManager();
 
         FragmentTransaction fragmentTransaction= fragmentManager.beginTransaction();
 
         fragmentTransaction.hide(lastFragment).show(nowFragment).commit();
-    }
-
-    public void setNavigationListener(NavigationListener navigationListener) {
-        this.navigationListener = navigationListener;
     }
 }

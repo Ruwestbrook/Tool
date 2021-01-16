@@ -4,4 +4,6 @@
     <string name="title">提示标题</string>
     <string name="cancel">取消</string>
     <string name="refresh_title">下拉刷新</string>
+    <string name="version_unknown">未知版本</string>
+
 </resources>

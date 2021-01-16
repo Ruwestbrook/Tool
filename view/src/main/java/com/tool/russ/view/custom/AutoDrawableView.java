@@ -35,13 +35,11 @@ public class AutoDrawableView extends androidx.appcompat.widget.AppCompatTextVie
         array.recycle();
     }
 
-
+    Drawable[] newDrawables=new Drawable[4];
+    @SuppressLint("DrawAllocation")
     @Override
     protected void onDraw(Canvas canvas) {
         Drawable[] drawables=getCompoundDrawables();
-        @SuppressLint("DrawAllocation")
-        Drawable[] newDrawables=new Drawable[drawables.length];
-
         for (int i = 0; i < drawables.length; i++) {
             Drawable drawable=drawables[i];
             if(drawable!=null){

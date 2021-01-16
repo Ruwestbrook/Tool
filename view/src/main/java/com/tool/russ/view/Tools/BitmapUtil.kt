@@ -1,5 +1,7 @@
 package com.tool.russ.view.Tools
 
+import android.Manifest
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
@@ -7,8 +9,8 @@ import android.graphics.Matrix
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import com.tool.russ.view.ToolView
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
+import java.io.*
+import java.lang.Exception
 
 class BitmapUtil {
 
@@ -21,7 +23,7 @@ class BitmapUtil {
          最节省内存的方式读取本地资源
          */
         @JvmStatic
-        fun readBitmap( resId:Int):Bitmap?{
+        fun readBitmap(resId: Int):Bitmap?{
 
             val opt=BitmapFactory.Options()
 
@@ -39,7 +41,7 @@ class BitmapUtil {
         @JvmStatic
         fun bitmapToBytes(bitmap: Bitmap?): ByteArray? {
             val stream=ByteArrayOutputStream();
-            bitmap?.compress(Bitmap.CompressFormat.JPEG,100,stream)
+            bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, stream)
             return stream.toByteArray()
         }
 
@@ -47,21 +49,21 @@ class BitmapUtil {
           质量压缩bitmap
          */
         @JvmStatic
-        fun compressBitmap(bitmap: Bitmap?,flagSize:Int): Bitmap? {
+        fun compressBitmap(bitmap: Bitmap?, flagSize: Int): Bitmap? {
 
             val stream=ByteArrayOutputStream()
-            bitmap?.compress(Bitmap.CompressFormat.JPEG,100,stream)
+            bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, stream)
             var options=5
 
             while (stream.toByteArray().size/1024 > flagSize){
                 stream.reset()
                 options -= 5
-                bitmap?.compress(Bitmap.CompressFormat.JPEG,options,stream)
+                bitmap?.compress(Bitmap.CompressFormat.JPEG, options, stream)
             }
 
             val ins=ByteArrayInputStream(stream.toByteArray())
 
-            return BitmapFactory.decodeStream(ins,null,null)
+            return BitmapFactory.decodeStream(ins, null, null)
 
         }
 
@@ -70,7 +72,7 @@ class BitmapUtil {
             drawable 转   bitmap
          */
         @JvmStatic
-        fun drawableToBitmap(drawable:Drawable):Bitmap{
+        fun drawableToBitmap(drawable: Drawable):Bitmap{
 
             val width=drawable.intrinsicWidth
 
@@ -78,11 +80,11 @@ class BitmapUtil {
 
             val config=Bitmap.Config.ARGB_8888
 
-            val bitmap=Bitmap.createBitmap(width,height,config)
+            val bitmap=Bitmap.createBitmap(width, height, config)
 
             val canvas=Canvas(bitmap)
 
-            drawable.setBounds(0,0,width,height)
+            drawable.setBounds(0, 0, width, height)
 
             drawable.draw(canvas)
 
@@ -112,7 +114,35 @@ class BitmapUtil {
          */
         @JvmStatic
         fun bitmapToDrawable(bitmap: Bitmap): Drawable {
-            return BitmapDrawable(ToolView.context.resources,bitmap)
+            return BitmapDrawable(ToolView.context.resources, bitmap)
+        }
+
+
+        @JvmStatic
+        fun saveFile( filePath: String, fileName: String, bytes: ByteArray?){
+            val fos: FileOutputStream?
+            if(filePath.isEmpty()){
+                return
+            }
+            val file= File(filePath)
+            if(!file.exists()){
+                file.mkdir()
+            }
+            val fullFile=File(filePath, fileName )
+            if(fullFile.exists()){
+                file.delete()
+            }
+            try {
+                fos=FileOutputStream(File(filePath, fileName))
+                fos.write(bytes)
+            }catch (e:Exception){
+
+            }
+        }
+        @JvmStatic
+        fun saveFile( filePath: String, fileName: String, bitmap: Bitmap?){
+            val bytes= bitmapToBytes(bitmap)
+            saveFile(filePath,fileName,bytes);
         }
 
 

@@ -235,12 +235,7 @@ public class RefreshView extends ViewGroup implements View.OnTouchListener {
         for (int i = 0; i < getChildCount(); i++) {
             View view=getChildAt(i);
             if(view == headView){
-
-                Log.d(TAG, "onLayout: pullLayoutParams.topMargin="+(pullLayoutParams.topMargin));
-                Log.d(TAG, "onLayout: pullLayoutParams.width="+(pullLayoutParams.width));
-                Log.d(TAG, "onLayout: pullLayoutParams.height="+(pullLayoutParams.height));
                 view.layout(0,pullLayoutParams.topMargin,headView.getMeasuredWidth(),pullLayoutParams.topMargin+headView.getMeasuredHeight());
-
             }else if(view==footerView){
 
             }else {
@@ -320,9 +315,7 @@ public class RefreshView extends ViewGroup implements View.OnTouchListener {
                     if (distance < touchSlop) {
                         return false;
                     }
-
-
-
+                    
                         if(distance>=headHeight && currentStatus!=STATUS_CAN_REFRESH){
                             currentStatus=STATUS_CAN_REFRESH;
                             mRefreshEvent.canRefresh();

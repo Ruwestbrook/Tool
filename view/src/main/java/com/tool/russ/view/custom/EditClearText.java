@@ -94,21 +94,10 @@ public class EditClearText extends androidx.appcompat.widget.AppCompatEditText {
 
         GradientDrawable drawable=new GradientDrawable();
         drawable.setColor(Color.BLUE);
+        drawable.setSize(DisplayUtil.dp2Px(getContext(),2),1000);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            Log.d(TAG, "setCursorDrawableColor: 直接设置");
             setTextCursorDrawable(drawable);
-        }else {
-            Field f = null;
-            try {
-                f = TextView.class.getDeclaredField("mCursorDrawable");
-                f.setAccessible(true);
-                f.set(editText, drawable);
-            } catch (Exception e) {
-                e.printStackTrace();
-                Log.d(TAG, "setCursorDrawableColor: "+e.getLocalizedMessage());
-            }
-
         }
     }
 
@@ -135,7 +124,7 @@ public class EditClearText extends androidx.appcompat.widget.AppCompatEditText {
 
         if(!isMeasure){
             int paddingRight=getPaddingRight();
-            size= (int) ((getMeasuredHeight()-getPaddingTop()-getPaddingBottom())*0.8);
+            size= (int) ((getMeasuredHeight()-getPaddingTop()-getPaddingBottom())*0.4);
             drawableLeft = getMeasuredWidth() - paddingRight - size;
             drawablePadding = (getMeasuredHeight() - size) / 2;
             isMeasure=true;
