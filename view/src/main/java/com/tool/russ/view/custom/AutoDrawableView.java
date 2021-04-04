@@ -18,8 +18,8 @@ public class AutoDrawableView extends androidx.appcompat.widget.AppCompatTextVie
         this(context,null);
     }
 
-    int drawableHeight=0;
-    int drawableWidth=0;
+    int drawableHeight;
+    int drawableWidth;
 
     public AutoDrawableView(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs,0);

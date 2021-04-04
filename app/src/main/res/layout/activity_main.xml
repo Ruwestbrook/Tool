@@ -9,38 +9,11 @@
     tools:ignore="MissingConstraints"
     tools:context=".MainActivity">
 
-        <com.tool.russ.view.custom.HeaderView
+
+        <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
-            app:title="这是标题"
-            app:title_size="20sp"
-            app:has_line="true"
-            app:back_size="40dp"
-            app:back_color="#ff00ff"
-            app:line_color="#a8a8a8"
-            android:layout_height="44dp"/>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:text="跳转第二个页面"
-            android:layout_marginTop="20dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:textSize="18sp"
-            android:id="@+id/button"
-            android:layout_height="100dp"/>
-
-
-        <com.tool.russ.view.custom.EditClearText
-            android:layout_width="200dp"
-            android:layout_marginTop="20dp"
-            android:textSize="14sp"
-            android:layout_height="40dp"/>
-
-        <com.tool.russ.view.custom.EditClearText
-            android:layout_width="200dp"
-            android:layout_marginTop="20dp"
-            android:textSize="14sp"
-            android:layout_height="40dp"/>
+            android:id="@+id/list"
+            android:layout_height="match_parent"/>
 
 
 </LinearLayout>
