@@ -143,6 +143,12 @@
 
 
 
+    <declare-styleable name="GradualChangeTextView">
+        <!--select为true的情况下 的字体颜色-->
+        <attr name="selectTextColor" format="color"/>
+        <attr name="unselectTextColor" format="color"/>
+        <attr name="textSize" format="dimension"/>
+    </declare-styleable>
 
 
 </resources>
