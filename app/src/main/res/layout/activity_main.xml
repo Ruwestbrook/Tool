@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -9,11 +9,15 @@
     tools:ignore="MissingConstraints"
     tools:context=".MainActivity">
 
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="match_parent"
+        <com.tool.russ.view.custom.GradualChangeTextView
+            android:layout_width="200dp"
             android:id="@+id/list"
-            android:layout_height="match_parent"/>
+            android:text="测试字符串"
+            app:textSize="15sp"
+            app:selectTextColor="#333"
+            app:unselectTextColor="#ffff00"
+            android:layout_centerInParent="true"
+            android:layout_height="200dp"/>
 
 
-</LinearLayout>
+</RelativeLayout>

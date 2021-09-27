@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <attr name="selectTextColor" format="color"/>
+    <attr name="unselectTextColor" format="color"/>
+    <attr name="textSize" format="dimension"/>
+
+
     <declare-styleable name="TxView">
         <attr name="radius" format="dimension"/>
         <attr name="TopRightRadius" format="dimension"/>
@@ -39,7 +45,7 @@
         <!--是否开启select属性-->
         <attr name="select" format="boolean"/>
         <!--select为true的情况下 的字体颜色-->
-        <attr name="selectTextColor" format="color"/>
+        <attr name="selectTextColor"/>
         <!--select为true的情况下 的背景颜色-->
         <attr name="selectBackColor" format="color"/>
         <!--select为true的情况下 的边框颜色-->
@@ -73,7 +79,7 @@
 
         <attr name="normalColor" format="color"/>
         <attr name="finishColor" format="color"/>
-        <attr name="textSize" format="dimension"/>
+        <attr name="textSize"/>
         <attr name="start" format="integer"/>
         <attr name="maxProgress" format="integer"/>
 
@@ -145,10 +151,11 @@
 
     <declare-styleable name="GradualChangeTextView">
         <!--select为true的情况下 的字体颜色-->
-        <attr name="selectTextColor" format="color"/>
-        <attr name="unselectTextColor" format="color"/>
-        <attr name="textSize" format="dimension"/>
+        <attr name="selectTextColor" />
+        <attr name="unselectTextColor" />
+        <attr name="textSize"/>
     </declare-styleable>
+
 
 
 </resources>
