@@ -61,7 +61,7 @@ class GradualChangeTextView : AppCompatTextView {
 
     private fun drawUpText(canvas: Canvas,text:String){
         canvas.save()
-        paint.color=Color.BLUE
+        paint.color=selectColor
         val textWidth=paint.measureText(text)
         val textHeight=paint.descent()+paint.ascent()
         val drawX=(width-textWidth)/2
@@ -75,7 +75,7 @@ class GradualChangeTextView : AppCompatTextView {
 
     private fun drawBottomText(canvas: Canvas,text:String){
         canvas.save()
-        paint.color=Color.RED
+        paint.color=unselectColor
         val textWidth=paint.measureText(text)
         val textHeight=paint.descent()+paint.ascent()
         val drawX=(width-textWidth)/2
